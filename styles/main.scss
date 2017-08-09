@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css?family=Droid+Serif|Mada');
+
+
+body {
+  background: #ece7e7;
+  margin: 0;
+  
+}
+
+.clearfix::after {
+  clear: both;
+  content: '';
+  display: table; }
+
+h1,h2,h3,h4,h5,h6 {
+  margin: 0 !important;
+  font-family: 'Droid Serif', serif;
+}
+
+p {
+  font-family: 'Mada', sans-serif;
+  font-size: 1.2vw;
+}
+
+h1 {
+  font-size: 5vw;
+}
+h2 {
+  font-size: 4vw;
+}
