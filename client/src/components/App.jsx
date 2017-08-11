@@ -1,10 +1,13 @@
 import React from 'react'
 import Foundation from 'react-foundation'
+import Nav from '.Nav'
+import Main from './Main'
 
 const App = () => (
 	<div>
-		<h1>Yuki</h1>
-		<h1>Yuki</h1>
+		<Nav />
+		<Main />
+
 	</div>
 )
 export default App;
