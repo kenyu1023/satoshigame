@@ -1,8 +1,7 @@
 import React from 'react'
-import { Switch, Route } from 'react-router-dom'
-import '../styles/index.scss'
+import '../../styles/index.scss'
 
-class App extends React.Component {
+export default class App extends React.Component {
 
 		constructor(props){
 			super(props);

@@ -1,6 +1,6 @@
 import React from 'react'
 import Foundation from 'react-foundation'
-import Nav from '.Nav'
+import Nav from './Nav'
 import Main from './Main'
 
 const App = () => (
