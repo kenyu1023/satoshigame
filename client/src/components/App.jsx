@@ -1,13 +1,12 @@
-import React from 'react'
+import React, { Component } from 'react'
 import Foundation from 'react-foundation'
-import Nav from './Nav'
 import Main from './Main'
 
-const App = () => (
-	<div>
-		<Nav />
-		<Main />
+export default class App extends Component{
 
-	</div>
-)
-export default App;
+	render(){
+		return (<div>
+			<Main />
+		</div>
+	)}
+}

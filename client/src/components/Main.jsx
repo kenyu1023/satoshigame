@@ -1,17 +1,19 @@
-import React from 'react'
-import { Switch, Route } from 'react-router-dom'
+import React, {Component} from 'react'
+import { Switch, Route, hashHistory } from 'react-router-dom'
 import Home from './Home'
 import Login from './Login'
-import Admin from './Admin'
+import Nav from './Nav'
 
-const Main = () => (
-	<main>
-		<Switch>
-			<Route exact path='/' component={Home}/>
-			<Route exact path='/login' component={Login}/>
-			<Route exact path='/admin' component={Admin}/>
-		</Switch>
-	</main>
-)
-
-export default Main
+export default class Main extends Component {
+	render(){
+		return (
+			<main>
+				<Nav />
+				<Switch history={hashHistory}>
+					<Route exact path='/' component={Home} />
+					<Route exact path='/login' component={Login} hideNav={this.hideNavigation}/>
+				</Switch>
+			</main>
+		)
+	}
+}
