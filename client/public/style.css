@@ -152,6 +152,9 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   justify-content: center;
   margin: 10px 0;
+  transition: all 0.5s ease;
+  overflow: hidden;
+  max-height: 100% !important;
 }
 
 .works-template .action-bar p, .blog-template .action-bar p {
@@ -161,6 +164,12 @@ h1, h2, h3, h4, h5, h6 {
   margin: 2px 5px;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.works-template .action-bar.hide, .blog-template .action-bar.hide {
+  height: 0;
+  max-height: 0;
+  transform: scaleY(0);
 }
 
 .works-template .works-content, .blog-template .works-content {
@@ -179,6 +188,10 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
 }
 
+.works-template ul, .works-template ol, .works-template span, .blog-template ul, .blog-template ol, .blog-template span {
+  color: black;
+}
+
 .blog-content {
   display: flex;
   flex-direction: column;
@@ -191,7 +204,61 @@ h1, h2, h3, h4, h5, h6 {
   padding: 10px 20px;
   margin: 20px 15px 0 15px;
   border-radius: 5px;
+}
+
+.blog-content .blog-ad-style hr {
+  width: 100%;
+}
+
+.blog-content .blog-ad-style h3 {
+  text-align: center;
+}
+
+.blog-content .blog-ad-style i {
+  margin: 5px;
   cursor: pointer;
+}
+
+.RichTextEditor__root___2QXK- {
+  width: 100%;
+}
+
+.action-blog {
+  padding: 0 15px;
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 10px 0;
+  transition: all 0.5s ease;
+  overflow: hidden;
+  max-height: 100% !important;
+}
+
+.action-blog.hide {
+  height: 0;
+  max-height: 0;
+  transform: scaleY(0);
+}
+
+.action-blog .post {
+  margin-top: 30px;
+  padding: 10px 8px;
+  border: none;
+  border-radius: 5px;
+  background-color: #142265;
+  color: white;
+  cursor: pointer;
+}
+
+.action-blog input {
+  padding: 5px 8px;
+  width: 100%;
+  margin: 10px 15px;
+  box-sizing: border-box;
+  font-size: 16px;
 }
 
 .page-top {
