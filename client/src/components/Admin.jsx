@@ -1,12 +1,29 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios'
+import Blog from './backend/blog'
+import Works from './backend/works'
 
 export default class Admin extends Component{
 
+	constructor(props){
+		super(props);
+		this.state= {
+			selected: 'works'
+		}
+
+		this.changeTemplate = this.changeTemplate.bind(this);
+	}
+
+	changeTemplate(template){
+		this.setState({
+			selected: template
+		});
+	}
+
 	render(){
 		const Button = withRouter(({ history}) => (
-			<button type='button' onClick={() => {
+			<p onClick={() => {
 				history.push('/login');
 					{/* axios.post('http://localhost:3001/api/users', {
 						name: this.refs.nameinput.value,
@@ -24,15 +41,28 @@ export default class Admin extends Component{
 					}); */}
 				}} >
 				LOGOUT
-			</button>
+			</p>
 		))
 
 		return(
 			<div className="admin-bg">
-				<div className="topBar"></div>
-				<div className="">
-					<h3>WELCOME!</h3>
-					<Button />
+				<div className="topBar"><p>Admin</p></div>
+				{/* <Button /> */}
+				<div className="sideBarLeft">
+					<h2>GENERAL</h2>
+					<hr />
+					<p onClick={()=>{ this.changeTemplate('works')}}>WORKS</p>
+					<p onClick={()=>{ this.changeTemplate('blog')}}>BLOG</p>
+					<h2>PROFILE</h2>
+					<hr />
+					<Button/>
+				</div>
+				<div className="spaceLeft"></div>
+				<div className="sideBarRight">
+					{
+						this.state.selected == 'works' ? (<Works />) : (<Blog />)
+					}
+
 				</div>
 			</div>
 		)
