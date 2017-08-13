@@ -26,3 +26,67 @@ h1 {
 h2 {
   font-size: 4vw;
 }
+
+.hide-nav {
+  display: none;
+}
+
+.login-bg {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("http://thewallpaper.co/wp-content/uploads/2016/10/HD-Game-Backgrounds-1080p-For-Computer-cool-1080p-smart-phone-background-photos-download-free-images-artworks-colourful-ultra-hd-1920x1080.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-style {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 40px 100px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.login-style h3 {
+  color: white;
+  margin-bottom: 20px !important;
+}
+
+.login-style input {
+  min-width: 200px;
+  padding: 5px 8px;
+  margin-bottom: 20px;
+}
+
+.login-style button {
+  padding: 5px 8px;
+  max-width: 100px;
+  margin: auto;
+}
+
+.page-top {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-image: url("https://static.pexels.com/photos/17679/pexels-photo.jpg");
+  background-position: center;
+  background-size: cover;
+}
+
+.intro {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro .intro-para {
+  margin: auto;
+}

@@ -2,6 +2,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import path from 'path'
 import mongoose from 'mongoose'
+import User from './server/user'
 
 const app = express()
 const port = process.env.PORT || 3001
@@ -19,24 +20,47 @@ app.use(express.static(path.join(__dirname, 'client/public')))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
+app.use(function(req, res, next) {
+ res.setHeader('Access-Control-Allow-Origin', '*');
+ res.setHeader('Access-Control-Allow-Credentials', 'true');
+ res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
+ res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
+ res.setHeader('Cache-Control', 'no-cache');
+ next();
+});
+
 mongoose.connect(url,{ useMongoClient: true }, dbErr => {
   if (dbErr) throw new Error(dbErr)
   else console.log('db connected')
 
-  app.post('/api/users', (request, response) => {
-    const { name, password } = request.body
+  // app.post('/api/users', (request, response) => {
+  //   const { name, password } = request.body
 
-    new User({
-      name,
-      password,
-      status : 1
-    }).save(err => {
-      if (err) response.status(500)
+  //   new User({
+  //     name,
+  //     password,
+  //     status : 1
+  //   }).save(err => {
+  //     if (err) response.status(500)
+  //     else {
+  //       User.find({}, (findErr, userArray) => {
+  //         if (findErr) response.status(500).send()
+  //         else response.status(200).send(userArray)
+  //       })
+  //     }
+  //   })
+  // })
+
+  app.post('/api/users', (request, response) => {
+    const { name, upassword } = request.body
+    User.find({user:name,password:upassword}, (err, userArray) => {
+      if (err) response.json({status:'nodfund'});
       else {
-        User.find({}, (findErr, userArray) => {
-          if (findErr) response.status(500).send()
-          else response.status(200).send(userArray)
-        })
+        if(userArray.length == 0){
+          response.json({status:'nodata'});
+        }else{
+          response.json({status:'/admin'});
+        }
       }
     })
   })
@@ -44,7 +68,9 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
   app.get('/api/users', (request, response) => {
     User.find({}, (err, userArray) => {
       if (err) response.status(500).send()
-      else response.status(200).send(userArray)
+      else {
+        response.json(userArray);
+      }
     })
   })
 
