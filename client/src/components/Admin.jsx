@@ -28,8 +28,9 @@ export default class Admin extends Component{
 		))
 
 		return(
-			<div className="login-bg">
-				<div className="login-style">
+			<div className="admin-bg">
+				<div className="topBar"></div>
+				<div className="">
 					<h3>WELCOME!</h3>
 					<Button />
 				</div>

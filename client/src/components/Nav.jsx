@@ -12,7 +12,7 @@ export default class Nav extends Component{
 	}
 
 	componentWillMount(){
-		if(window.location.href.split('/')[window.location.href.split('/').length-1]==='login'){
+		if(window.location.href.split('/')[window.location.href.split('/').length-1]==='login'||window.location.href.split('/')[window.location.href.split('/').length-1]==='admin'){
 			console.log(this.state.menuState);
 			this.setState({
 				menuState: this.state.menuState == '' ? 'hide-nav' : ''
