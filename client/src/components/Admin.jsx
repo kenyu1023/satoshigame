@@ -62,7 +62,6 @@ export default class Admin extends Component{
 					{
 						this.state.selected == 'works' ? (<Works />) : (<Blog />)
 					}
-
 				</div>
 			</div>
 		)

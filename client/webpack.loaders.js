@@ -6,9 +6,9 @@ module.exports = [
   },
   {
     test: /\.css$/,
-    loaders: ['style-loader', 'css-loader?importLoaders=1'],
+    loaders: ['style-loader', 'css-loader?modules', 'css-loader?importLoaders=1'],
     exclude: ['node_modules']
-  },
+	},
   {
     test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
     exclude: /(node_modules|bower_components)/,
