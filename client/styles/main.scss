@@ -1,8 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Droid+Serif|Mada');
+@import url('https://fonts.googleapis.com/css?family=Crimson+Text|Mada:300|Source+Sans+Pro:200');
+
 
 
 body {
-  background: #ece7e7;
+  background: white;
   margin: 0;
   
 }
@@ -14,10 +15,10 @@ body {
 
 h1,h2,h3,h4,h5,h6 {
   margin: 0 !important;
-  font-family: 'Droid Serif', serif;
+  font-family: 'Crimson Text', serif;
 }
 
-p {
+p,a {
   font-family: 'Mada', sans-serif;
   font-size: 1.2vw;
 }
