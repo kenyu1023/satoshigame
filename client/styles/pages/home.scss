@@ -37,7 +37,7 @@
         color: #686868;
         line-height: 1.8;
 
-        .aboutButton {
+        a {
             border: 2px solid #DC143C;
             padding: 5px 7px;
         }
@@ -211,6 +211,7 @@
                         padding: 10px;
                         border: none;
                         outline:none;
+                        resize: none;
                         font-size: 1.2vw;
                     }
                 }

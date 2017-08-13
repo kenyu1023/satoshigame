@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import '../../styles/index.scss'
 
 export default class App extends React.Component {
@@ -30,7 +31,7 @@ export default class App extends React.Component {
 								<p>I am a Japanese artist who specialise in game character design, game environmetn design and CG.
 									 I have five years of professional experience in e CG design industry.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 								</p>
-									<a className="aboutButton">Read More</a>
+									<Link to='/about'>Read More</Link>
 								</div>
 								<div className="about-img">
 									<img className="portlate" src="https://static.pexels.com/photos/157669/portrait-character-black-and-white-lofty-tone-157669.jpeg" alt="My photo"/>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import '../../styles/index.scss'
 import Home from './Home'
 
 export default class Nav extends Component{
@@ -23,11 +24,12 @@ export default class Nav extends Component{
 	render(){
 		return(
 			<div className={this.state.menuState}>
-				<Link to="/" >Demo</Link>
-				<Link to="/home">Demo2</Link>
+				<div className="nav">
+				<Link to="/">Home</Link>
+				<Link to="/about">About</Link>
 				<Link to="/login">Login</Link>
+				</div>
 			</div>
 		)
 	}
-
 }
