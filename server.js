@@ -53,12 +53,25 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
   //   })
   // })
 
-  app.get('*', function (request, response){
-    if(response.req.originalUrl!='admin'){
+  // app.get('*', function (request, response){
+  //   console.log(response.req.originalUrl);
+  //   if(response.req.originalUrl!='/admin'){
+  //     response.sendFile(path.resolve(__dirname, 'client/public', 'index.html'))
+  //   }else{
+  //     response.json({status:'No Access'});
+  //   }
+  // })
+
+  app.get('/about', function (request, response){
       response.sendFile(path.resolve(__dirname, 'client/public', 'index.html'))
-    }else{
-      res.json({status:'No Access'});
-    }
+  })
+
+  app.get('/login', function (request, response){
+      response.sendFile(path.resolve(__dirname, 'client/public', 'index.html'))
+  })
+
+  app.get('/admin', function (request, response){
+      response.json({status:'No Access'});
   })
 
   // app.get('/admin', function (req, res) {
