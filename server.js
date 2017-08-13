@@ -3,6 +3,7 @@ import bodyParser from 'body-parser'
 import path from 'path'
 import mongoose from 'mongoose'
 import User from './server/user'
+import Blog from './server/blog'
 
 const app = express()
 const port = process.env.PORT || 3001
@@ -35,24 +36,6 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
   if (dbErr) throw new Error(dbErr)
   else console.log('db connected')
 
-  // app.post('/api/users', (request, response) => {
-  //   const { name, password } = request.body
-
-  //   new User({
-  //     name,
-  //     password,
-  //     status : 1
-  //   }).save(err => {
-  //     if (err) response.status(500)
-  //     else {
-  //       User.find({}, (findErr, userArray) => {
-  //         if (findErr) response.status(500).send()
-  //         else response.status(200).send(userArray)
-  //       })
-  //     }
-  //   })
-  // })
-
   // app.get('*', function (request, response){
   //   console.log(response.req.originalUrl);
   //   if(response.req.originalUrl!='/admin'){
@@ -73,16 +56,6 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
   app.get('/admin', function (request, response){
       response.json({status:'No Access'});
   })
-
-  // app.get('/admin', function (req, res) {
-  //   console.log('admin page');
-  //   res.json({status:'/admin'});
-  // })
-
-  // app.get('/login', function (req, res) {
-  //   console.log('login page');
-  //   res.json({status:'/loign'});
-  // })
 
   app.post('/api/users', (request, response) => {
     const { name, upassword } = request.body
@@ -123,18 +96,43 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
     // })
   })
 
-  app.delete('/api/users', (request, response) => {
-    const { id } = request.body
-    User.findByIdAndRemove(id, err => {
-      if (err) response.status(500).send()
+  // BLOG ///////////////////////////////
+
+  app.post('/api/blog', (request, response) => {
+    const { btitle, bcontent, bdate } = request.body
+    new Blog({
+      btitle,
+      bcontent,
+      bdate
+    }).save(err => {
+      if (err) response.status(500)
       else {
-        User.find({}, (findErr, userArray) => {
-          if (findErr) response.status(500).send()
-          else response.status(200).send(userArray)
-        })
+        response.json({status:'success'});
       }
     })
   })
+
+  app.get('/api/blog', (request, response) => {
+    Blog.find({}, (err, blogArray) => {
+      if (err) response.status(500).send()
+      else {
+        response.json(blogArray);
+      }
+    })
+  })
+
+  app.delete('/api/blog', (request, response) => {
+    const { id } = request.body
+    // console.log(id);
+    Blog.findByIdAndRemove(id, err => {
+      if (err) response.status(500).send()
+      else {
+        response.json({status:'success'});
+      }
+    })
+  })
+
+  ///////////////////////////////////////
 
   app.listen(port, err => {
     if (err) throw new Error(err)
