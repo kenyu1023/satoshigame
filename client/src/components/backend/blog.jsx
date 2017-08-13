@@ -1,38 +1,31 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
 import Foundation from 'react-foundation'
-import RichTextEditor from 'react-rte'
+import ReactQuill from 'react-quill'
 import renderHTML from 'react-render-html'
 import axios from 'axios'
+import theme from 'react-quill/dist/quill.snow.css'
 
 export default class blog extends Component{
 	//http://localhost:3001
 	constructor(props){
 		super(props);
+
+		this.state = {
+			text: '',
+			showEdit: 'hide',
+			blogDatas: []
+		}
+    this.handleChange = this.handleChange.bind(this)
+
 		this.showMenu = this.showMenu.bind(this);
 		this.saveBlog = this.saveBlog.bind(this);
 		this.updateBlog = this.updateBlog.bind(this);
 		this.deleteBlog = this.deleteBlog.bind(this);
 	}
 
-	static propTypes = {
-		onChange: PropTypes.func,
-		showMenu: PropTypes.func
-	};
-
-	state = {
-		value: RichTextEditor.createEmptyValue(),
-		showEdit: 'hide',
-		blogDatas: []
-	}
-
-	onChange = (value) => {
-    this.setState({value});
-    if (this.props.onChange) {
-      this.props.onChange(
-        value.toString('html')
-      );
-    }
-	}
+	handleChange(value) {
+    this.setState({ text: value })
+  }
 
 	showMenu(){
 		this.setState({
@@ -48,14 +41,14 @@ export default class blog extends Component{
 		// alert(this.state.value.toString('html'));
 		axios.post('/api/blog', {
 			btitle: this.refs.titledata.value,
-			bcontent: this.state.value.toString('html'),
+			bcontent: this.state.text,
 			bdate: dateTime
 		})
 		.then(response => {
 			if(response.data.status == 'success'){
 				// alert('Saved!');
 				this.refs.titledata.value = '';
-				this.setState({value: RichTextEditor.createEmptyValue()});
+				this.setState({text: ''});
 				this.updateBlog();
 			}else{
 				alert('Failed..');
@@ -104,7 +97,26 @@ export default class blog extends Component{
 		this.updateBlog();
 	}
 
+
+
 	render(){
+
+		const modules = {
+			toolbar: [
+				[{ 'header': [1, 2, false] }],
+				['bold', 'italic', 'underline','strike', 'blockquote'],
+				[{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'},{'align': 'center'},{'align': 'right'},{'align': 'justify'}],
+				['link', 'image'],
+				['clean']
+			],
+  	}
+
+		const formats= [
+			'header',
+			'bold', 'italic', 'underline', 'strike', 'blockquote',
+			'list', 'bullet', 'indent','align',
+			'link', 'image'
+		]
 
 		return (
 			<div className="blog-template">
@@ -114,10 +126,9 @@ export default class blog extends Component{
 				</div>
 				<div className={"action-blog " + this.state.showEdit}>
 					<input ref="titledata" type="text" placeholder="Title" maxLength="100" required />
-					<RichTextEditor
-						value={this.state.value}
-						onChange={this.onChange}
-					/>
+					<ReactQuill theme="snow" modules={modules}
+                    formats={formats} value={this.state.text}
+                  onChange={this.handleChange} />
 					<button className="post" onClick={this.saveBlog}>POST BLOG</button>
 				</div>
 				<div className="blog-content">
