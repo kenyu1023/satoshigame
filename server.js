@@ -16,6 +16,8 @@ const mongodbDatabase = 'heroku_wg2xkfhc';
 var url = 'mongodb://'+authenticate+mongodbHost+':'+mongodbPort + '/' + mongodbDatabase;
 console.log(url);
 
+var loginArray = [];
+
 app.use(express.static(path.join(__dirname, 'client/public')))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -51,6 +53,37 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
   //   })
   // })
 
+  // app.get('*', function (request, response){
+  //   console.log(response.req.originalUrl);
+  //   if(response.req.originalUrl!='/admin'){
+  //     response.sendFile(path.resolve(__dirname, 'client/public', 'index.html'))
+  //   }else{
+  //     response.json({status:'No Access'});
+  //   }
+  // })
+
+  app.get('/about', function (request, response){
+      response.sendFile(path.resolve(__dirname, 'client/public', 'index.html'))
+  })
+
+  app.get('/login', function (request, response){
+      response.sendFile(path.resolve(__dirname, 'client/public', 'index.html'))
+  })
+
+  app.get('/admin', function (request, response){
+      response.json({status:'No Access'});
+  })
+
+  // app.get('/admin', function (req, res) {
+  //   console.log('admin page');
+  //   res.json({status:'/admin'});
+  // })
+
+  // app.get('/login', function (req, res) {
+  //   console.log('login page');
+  //   res.json({status:'/loign'});
+  // })
+
   app.post('/api/users', (request, response) => {
     const { name, upassword } = request.body
     User.find({user:name,password:upassword}, (err, userArray) => {
@@ -59,6 +92,7 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
         if(userArray.length == 0){
           response.json({status:'nodata'});
         }else{
+          loginArray.push(userArray[0]._id);
           response.json({status:'/admin'});
         }
       }
@@ -69,6 +103,7 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
     User.find({}, (err, userArray) => {
       if (err) response.status(500).send()
       else {
+        console.log(loginArray);
         response.json(userArray);
       }
     })

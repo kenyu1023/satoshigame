@@ -1,4 +1,8 @@
-@import url(https://fonts.googleapis.com/css?family=Crimson+Text|Mada:300|Source+Sans+Pro:200);body {
+@import url(https://fonts.googleapis.com/css?family=Crimson+Text|Mada:300|Source+Sans+Pro:200);body, html {
+  height: 100%;
+}
+
+body {
   background: white;
   margin: 0;
 }
@@ -14,25 +18,12 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Crimson Text', serif;
 }
 
-p, a {
-  font-family: 'Mada', sans-serif;
-  font-size: 1.2vw;
-}
-
-h1 {
-  font-size: 5vw;
-}
-
-h2 {
-  font-size: 4vw;
-}
-
 .hide-nav {
   display: none;
 }
 
 .login-bg {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("http://thewallpaper.co/wp-content/uploads/2016/10/HD-Game-Backgrounds-1080p-For-Computer-cool-1080p-smart-phone-background-photos-download-free-images-artworks-colourful-ultra-hd-1920x1080.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("https://s-media-cache-ak0.pinimg.com/originals/9d/78/6c/9d786cdd0c41d24f19098bd63aaa179c.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   width: 100%;
@@ -48,6 +39,7 @@ h2 {
   display: flex;
   flex-direction: column;
   text-align: center;
+  border-radius: 5px;
 }
 
 .login-style h3 {
@@ -81,6 +73,125 @@ h2 {
   text-align: center;
   margin: 5px 0;
   text-decoration: none;
+}
+
+.admin-bg {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("https://s-media-cache-ak0.pinimg.com/originals/9d/78/6c/9d786cdd0c41d24f19098bd63aaa179c.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.admin-bg .topBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 5px 10px 0 0;
+  width: 100%;
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  flex-direction: row-reverse;
+}
+
+.admin-bg .sideBarLeft {
+  position: fixed;
+  top: 0;
+  left: 0;
+  max-width: 20%;
+  min-width: 160px;
+  background-color: rgba(0, 0, 0, 0.7);
+  height: 100vh;
+  padding: 60px 5px 10px 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-bg .sideBarLeft h2 {
+  color: white;
+}
+
+.admin-bg .sideBarLeft p {
+  padding-left: 30px;
+  color: white;
+  cursor: pointer;
+}
+
+.admin-bg .sideBarLeft hr {
+  width: 100%;
+}
+
+.admin-bg .spaceLeft {
+  max-width: 20%;
+  min-width: 160px;
+  padding: 60px 5px 10px 5px;
+  height: 100vh;
+}
+
+.admin-bg .sideBarRight {
+  width: 100%;
+  padding: 60px 5px 10px 5px;
+  color: white;
+}
+
+.admin-bg .sideBarRight h1 {
+  text-align: center;
+}
+
+.works-template, .blog-template {
+  display: flex;
+  flex-direction: column;
+}
+
+.works-template .action-bar, .blog-template .action-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.works-template .action-bar p, .blog-template .action-bar p {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px 8px;
+  margin: 2px 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.works-template .works-content, .blog-template .works-content {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.works-template .works-content div, .blog-template .works-content div {
+  display: block;
+  width: 33.33%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.works-template .works-content img, .blog-template .works-content img {
+  width: 100%;
+}
+
+.blog-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.blog-content .blog-ad-style {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px 20px;
+  margin: 20px 15px 0 15px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .page-top {
