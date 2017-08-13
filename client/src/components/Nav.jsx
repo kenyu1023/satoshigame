@@ -25,7 +25,6 @@ export default class Nav extends Component{
 			<div className={this.state.menuState}>
 				<Link to="/" >Demo</Link>
 				<Link to="/home">Demo2</Link>
-				<Link to="/login">Login</Link>
 			</div>
 		)
 	}
