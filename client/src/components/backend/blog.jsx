@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import Foundation from 'react-foundation'
 import ReactQuill from 'react-quill'
 import renderHTML from 'react-render-html'
+import firebase from 'firebase'
 import axios from 'axios'
 import theme from 'react-quill/dist/quill.snow.css'
+import FileUploader from 'react-firebase-file-uploader'
 
-export default class blog extends Component{
+class blog extends Component{
 	//http://localhost:3001
 	constructor(props){
 		super(props);
@@ -13,7 +15,13 @@ export default class blog extends Component{
 		this.state = {
 			text: '',
 			showEdit: 'hide',
-			blogDatas: []
+			blogDatas: [],
+			insertImage:[],
+			username: '',
+			avatar: '',
+			isUploading: false,
+			progress: 0,
+			avatarURL: ''
 		}
     this.handleChange = this.handleChange.bind(this)
 
@@ -21,6 +29,9 @@ export default class blog extends Component{
 		this.saveBlog = this.saveBlog.bind(this);
 		this.updateBlog = this.updateBlog.bind(this);
 		this.deleteBlog = this.deleteBlog.bind(this);
+		this.imageHandler= this.imageHandler.bind(this);
+
+		this.updateBlog();
 	}
 
 	handleChange(value) {
@@ -33,6 +44,14 @@ export default class blog extends Component{
 		});
 	}
 
+	getAttrFromString(str, node, attr) {
+    var regex = new RegExp('<' + node + ' .*?' + attr + '="(.*?)"', "gi"), result, res = [];
+    while ((result = regex.exec(str))) {
+        res.push(result[1]);
+    }
+    return res;
+	}
+
 	saveBlog(){
 		let today = new Date();
 		let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
@@ -42,13 +61,13 @@ export default class blog extends Component{
 		axios.post('/api/blog', {
 			btitle: this.refs.titledata.value,
 			bcontent: this.state.text,
+			bimage: this.state.insertImage,
 			bdate: dateTime
 		})
 		.then(response => {
 			if(response.data.status == 'success'){
-				// alert('Saved!');
 				this.refs.titledata.value = '';
-				this.setState({text: ''});
+				this.setState({text: '', insertImage: []});
 				this.updateBlog();
 			}else{
 				alert('Failed..');
@@ -62,7 +81,7 @@ export default class blog extends Component{
 	updateBlog(){
 		axios.get('/api/blog')
 		.then((response) => {
-			console.log(response.data);
+			// console.log(response.data);
 			this.setState({
 				blogDatas: response.data
 			});
@@ -72,7 +91,7 @@ export default class blog extends Component{
 		});
 	}
 
-	deleteBlog(id){
+	deleteBlog(id, index){
 		axios({
       method: 'delete',
       url: '/api/blog',
@@ -82,6 +101,16 @@ export default class blog extends Component{
     })
     .then(response => {
       	if(response.data.status == 'success'){
+
+					for(var i = 0; i < this.state.blogDatas[index].bimage.length; i++){
+						var desertRef = firebase.storage().ref('satoshigame/blog').child(this.state.blogDatas[index].bimage[i]);
+						desertRef.delete().then(function() {
+							// console.log('deleted!');
+						}).catch(function(error) {
+							console.log(error);
+						})
+					}
+
 					this.updateBlog();
 				}else{
 					alert('Failed..');
@@ -93,8 +122,37 @@ export default class blog extends Component{
     })
 	}
 
-	componentWillMount(){
-		this.updateBlog();
+	handleChangeUsername = (event) => this.setState({username: event.target.value});
+  handleUploadStart = () => this.setState({isUploading: true, progress: 0});
+  handleProgress = (progress) => this.setState({progress});
+  handleUploadError = (error) => {
+    this.setState({isUploading: false});
+    console.error(error);
+  }
+  handleUploadSuccess = (filename) => {
+		// console.log(filename);
+		this.state.insertImage.push(filename);
+		this.setState({
+			insertImage: this.state.insertImage
+		});
+    this.setState({avatar: filename, progress: 100, isUploading: false});
+		firebase.storage().ref('satoshigame/blog').child(filename).getDownloadURL().then(url => this.setState({avatarURL: url},
+			() => {
+				if(this.refs.reactQuill.getEditor().getSelection()!=null){
+					let cursorPosition = this.refs.reactQuill.getEditor().getSelection().index;
+					this.refs.reactQuill.getEditor().insertEmbed(cursorPosition, 'image', this.state.avatarURL , "user");
+					this.refs.reactQuill.getEditor().setSelection(cursorPosition + 1);
+				}else{
+					this.refs.reactQuill.getEditor().insertEmbed(0, 'image', this.state.avatarURL , "user");
+					this.refs.reactQuill.getEditor().setSelection(1);
+				}
+				document.getElementById('imageselect').value ="";
+			}
+		));
+	};
+
+	imageHandler(){
+		document.getElementById('imageselect').click();
 	}
 
 
@@ -102,20 +160,24 @@ export default class blog extends Component{
 	render(){
 
 		const modules = {
-			toolbar: [
-				[{ 'header': [1, 2, false] }],
-				['bold', 'italic', 'underline','strike', 'blockquote'],
-				[{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'},{'align': 'center'},{'align': 'right'},{'align': 'justify'}],
-				['link', 'image'],
-				['clean']
-			],
-  	}
+			formula: true,
+        toolbar: {
+          container: [[{ 'header': [1, 2, false] }],
+					['bold', 'italic', 'underline','strike', 'blockquote'],
+					[{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'},{'align': 'center'},{'align': 'right'},{'align': 'justify'}],
+					['link','image'],
+					['clean']],
+					handlers: {
+							'image': this.imageHandler
+					}
+			}
+		}
 
 		const formats= [
 			'header',
 			'bold', 'italic', 'underline', 'strike', 'blockquote',
 			'list', 'bullet', 'indent','align',
-			'link', 'image'
+			'link','image'
 		]
 
 		return (
@@ -125,8 +187,18 @@ export default class blog extends Component{
 					<p onClick={this.showMenu}><i className="fa fa-plus-circle" aria-hidden="true"></i> New Blog</p>
 				</div>
 				<div className={"action-blog " + this.state.showEdit}>
+						<FileUploader className="hidden-class" id="imageselect"
+							accept="image/*"
+							name="avatar"
+							randomizeFilename
+							storageRef={firebase.storage().ref('satoshigame/blog')}
+							onUploadStart={this.handleUploadStart}
+							onUploadError={this.handleUploadError}
+							onUploadSuccess={this.handleUploadSuccess}
+							onProgress={this.handleProgress}
+						/>
 					<input ref="titledata" type="text" placeholder="Title" maxLength="100" required />
-					<ReactQuill theme="snow" modules={modules}
+					<ReactQuill ref="reactQuill" theme="snow" modules={modules}
                     formats={formats} value={this.state.text}
                   onChange={this.handleChange} />
 					<button className="post" onClick={this.saveBlog}>POST BLOG</button>
@@ -140,7 +212,7 @@ export default class blog extends Component{
 									<div>{renderHTML(data.bcontent)}</div>
 									<p>{data.bdate}</p>
 									<hr />
-									<i onClick={()=>{ this.deleteBlog(data._id) }} className="fa fa-trash" aria-hidden="true"></i>
+									<i onClick={()=>{ this.deleteBlog(data._id, index) }} className="fa fa-trash" aria-hidden="true"></i>
 									<i className="fa fa-pencil-square" aria-hidden="true"></i>
 								</div>
 							)
@@ -155,3 +227,5 @@ export default class blog extends Component{
 			</div>
 	)}
 }
+
+export default blog;

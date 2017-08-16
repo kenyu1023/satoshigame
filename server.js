@@ -4,6 +4,7 @@ import path from 'path'
 import mongoose from 'mongoose'
 import User from './server/user'
 import Blog from './server/blog'
+import Work from './server/work'
 
 const app = express()
 const port = process.env.PORT || 3001
@@ -99,10 +100,11 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
   // BLOG ///////////////////////////////
 
   app.post('/api/blog', (request, response) => {
-    const { btitle, bcontent, bdate } = request.body
+    const { btitle, bcontent, bimage, bdate } = request.body
     new Blog({
       btitle,
       bcontent,
+      bimage,
       bdate
     }).save(err => {
       if (err) response.status(500)
@@ -125,6 +127,42 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
     const { id } = request.body
     // console.log(id);
     Blog.findByIdAndRemove(id, err => {
+      if (err) response.status(500).send()
+      else {
+        response.json({status:'success'});
+      }
+    })
+  })
+
+  ///////////////////////////////////////
+
+  // Work ///////////////////////////////
+
+  app.post('/api/work', (request, response) => {
+    const { wtitle, wurl, wfile, wembed, wicons, wcontent, wdate } = request.body
+    new Work({
+      wtitle, wurl, wfile, wembed, wicons, wcontent, wdate
+    }).save(err => {
+      if (err) response.status(500)
+      else {
+        response.json({status:'success'});
+      }
+    })
+  })
+
+  app.get('/api/work', (request, response) => {
+    Work.find({}, (err, workArray) => {
+      if (err) response.status(500).send()
+      else {
+        response.json(workArray);
+      }
+    })
+  })
+
+  app.delete('/api/work', (request, response) => {
+    const { id } = request.body
+    // console.log(id);
+    Work.findByIdAndRemove(id, err => {
       if (err) response.status(500).send()
       else {
         response.json({status:'success'});

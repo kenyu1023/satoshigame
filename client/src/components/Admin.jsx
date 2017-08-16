@@ -3,6 +3,17 @@ import { withRouter } from 'react-router-dom'
 import axios from 'axios'
 import Blog from './backend/blog'
 import Works from './backend/works'
+import firebase from 'firebase'
+
+const config = {
+  apiKey: "AIzaSyB6Vw0uLZy6Rnti4gvC813OqfAWG-dtqSE",
+	authDomain: "websites-f7189.firebaseapp.com",
+	databaseURL: "https://websites-f7189.firebaseio.com",
+	projectId: "websites-f7189",
+	storageBucket: "websites-f7189.appspot.com",
+	messagingSenderId: "559381342157"
+}
+firebase.initializeApp(config);
 
 export default class Admin extends Component{
 

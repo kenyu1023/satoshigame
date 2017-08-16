@@ -177,17 +177,6 @@ h1, h2, h3, h4, h5, h6 {
   flex-wrap: wrap;
 }
 
-.works-template .works-content div, .blog-template .works-content div {
-  display: block;
-  width: 33.33%;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-.works-template .works-content img, .blog-template .works-content img {
-  width: 100%;
-}
-
 .works-template ul, .works-template ol, .works-template span, .blog-template ul, .blog-template ol, .blog-template span {
   color: black;
 }
@@ -270,6 +259,48 @@ h1, h2, h3, h4, h5, h6 {
 
 .ql-align-justify {
   text-align: justify;
+}
+
+.ql-container {
+  min-height: 10em;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  background: #fefcfc;
+  color: black !important;
+}
+
+.ql-toolbar {
+  background: #eaecec;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.hidden-class {
+  display: none;
+}
+
+img {
+  max-width: 100%;
+}
+
+.imageWorkBolc {
+  width: 31.83%;
+  height: 25vw;
+  overflow: hidden;
+  display: block;
+  margin: 0.5%;
+  box-sizing: border-box;
+}
+
+.imageWorkBolc img {
+  width: 100%;
+  object-fit: cover;
+  height: 100%;
+  transition: all 0.6s ease;
+}
+
+.imageWorkBolc img:hover {
+  transform: scale(1.1);
 }
 
 .page-top {
