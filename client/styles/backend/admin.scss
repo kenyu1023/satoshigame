@@ -66,6 +66,9 @@
         align-items: center;
         justify-content: center;
         margin: 10px 0;
+        transition: all 0.5s ease;
+        overflow: hidden;
+        max-height: 100% !important;
         p{
             background-color: rgba(0,0,0,0.7);
             color: white;
@@ -74,19 +77,18 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        &.hide{
+            height: 0;
+            max-height: 0;
+            transform: scaleY(0);
+        }
     }
     .works-content{
         display: flex;
         flex-wrap: wrap;
-        div{
-            display: block;
-            width: 33.33%;
-            padding: 10px;
-            box-sizing: border-box;
-        }
-        img{
-            width: 100%;
-        }
+    }
+    ul,ol,span{
+        color: black;
     }
 }
 
@@ -100,9 +102,104 @@
         padding: 10px 20px;
         margin: 20px 15px 0 15px;
         border-radius: 5px;
-        cursor: pointer;
+        hr{
+            width: 100%;
+        }
+        h3{
+            text-align: center;
+        }
+        i{
+            margin: 5px;
+            cursor: pointer;
+        }
     }
 }
 
+.quill{
+    width: 100%;
+}
 
+.action-blog{
+    padding: 0 15px;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 10px 0;
+    transition: all 0.5s ease;
+    // overflow: hidden;
+    max-height: 100% !important;
+    &.hide{
+        height: 0;
+        max-height: 0;
+        transform: scaleY(0);
+    }
+    .post{
+        margin-top: 30px;
+        padding: 10px 8px;
+        border:none;
+        border-radius: 5px;
+        background-color: #142265;
+        color: white;
+        cursor: pointer;
+    }
+    input{
+        padding: 5px 8px;
+        width: 100%;
+        margin: 10px 15px;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+}
 
+.ql-align-center{
+    text-align: center;
+}
+.ql-align-right{
+    text-align: right;
+}
+.ql-align-justify{
+    text-align: justify;
+}
+
+.ql-container {
+  min-height: 10em;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  background: #fefcfc;
+  color: black !important;
+}
+
+.ql-toolbar {
+  background: #eaecec;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.hidden-class{
+    display: none;
+}
+
+img{
+    max-width: 100%;
+}
+
+.imageWorkBolc{
+    width: 31.83%;
+    height: 25vw;
+    overflow: hidden;
+    display: block;
+    margin: 0.5%;
+    box-sizing: border-box;
+    img{
+        width: 100%;
+        object-fit: cover;
+        height: 100%;
+        transition: all 0.6s ease;
+        &:hover{
+            transform: scale(1.1);
+        }
+    }
+}
