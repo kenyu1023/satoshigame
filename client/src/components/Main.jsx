@@ -19,6 +19,7 @@ export default class Main extends Component {
 				<Switch history={hashHistory}>
 					<Route exact path='/' component={Home} />
 				  <Route exact path='/about' component={About} />
+					<Route exact path='/portfolio' component={Portfolio} />
 					<Route exact path='/login' component={Login} />
 					<Route exact path='/admin' component={Admin} />
 				</Switch>
