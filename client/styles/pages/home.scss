@@ -5,9 +5,27 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    background-image: url("https://static.pexels.com/photos/17679/pexels-photo.jpg");
-    background-position: center;
-    background-size: cover;
+    overflow: hidden;
+    position: relative;
+
+    // .overlay {
+    //     width: 100%;
+    //     background: url("http://www.wido.fr/wp-content/uploads/2016/11/Trame-points.png");
+    // }
+   
+
+    .name {
+        position: absolute;
+        color: white;
+    }
+
+    // video{
+    //     //position: absolute;
+    //     width: 100%;
+    //     background: url("http://www.wido.fr/wp-content/uploads/2016/11/Trame-points.png");
+    //     z-index: -10;
+    // }
+
 }
 
 .intro {

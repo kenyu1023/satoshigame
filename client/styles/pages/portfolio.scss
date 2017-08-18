@@ -1,6 +1,6 @@
 .portfolio-header {
     width:100%;
-    margin: 50px 0;
+    padding: 50px 0;
     text-align: center;
 
     .border-left {
@@ -24,7 +24,7 @@
 .portfolio-main {
     height: 100%;
     width: 90%;
-    padding-left: 150px;
+    padding-left: 180px;
     margin: 20px auto;
     display: flex;
     //justify-content: center;
@@ -36,5 +36,87 @@
         margin: 5px;
         border: 1px solid lightcoral;
     }
+
+    .modal-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        position: fixed;
+        background-color:white;
+        width: 80%;
+        height: 90%;
+        max-width: 1200px;
+        margin: auto;
+        left: 50%;
+        padding: 20px;
+        border-radius:5px;
+
+        transform: translate(-50%, -200%);
+
+        transition:transform 0.3s ease-out;
+
+        .modal-img {
+            width: 500px;
+            height: 500px;
+
+            img {
+                width: 100%;
+            }
+        }
+
+        .modal-sub-img-container {
+            display: flex;
+            margin-top: 20px;
+
+            .modal-sub-img {
+                width: 100px;
+                height: 100px;
+                margin: 0 5px;
+                border: 1px solid lightcoral;
+            }
+        }
+         
+
+
+        .modal-para {
+            margin: 30px auto;
+            width: 50%;
+
+            h1 {
+                text-align: center;
+            }
+
+            a {
+                text-align: center;
+                display: block;
+                text-decoration: none;
+            }
+        }
+
+        
+    }
+        .modal:before {
+            content :"";
+            position: fixed;
+            display: none;
+            background-color:rgba(0,0,0,0.6);
+            top:0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            
+        }
+
+        .modal:target:before {
+            display: block;
+        }
+
+        .modal:target .modal-container {
+            top: 2.5%;
+            transform: translate(-50%, 0);
+        }
+
+        #modal-close {}
 }
 
