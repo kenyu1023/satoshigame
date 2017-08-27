@@ -42,10 +42,9 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        position: fixed;
+        position:absolute;
         background-color:white;
         width: 80%;
-        height: 90%;
         max-width: 1200px;
         margin: auto;
         left: 50%;
@@ -105,7 +104,6 @@
             left: 0;
             height: 100%;
             width: 100%;
-            
         }
 
         .modal:target:before {

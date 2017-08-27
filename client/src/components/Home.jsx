@@ -1,6 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { ParallaxController } from 'react-scroll-parallax';
+import { Parallax } from 'react-scroll-parallax';
 import '../../styles/index.scss'
+
+ParallaxController.init();
+
 
 export default class App extends React.Component {
 
@@ -26,6 +31,16 @@ export default class App extends React.Component {
 								<h2>Hi This is an intro</h2>
 								<p>intro text here I am Satoshi Takasawa fake paragaraph here this is going to be about three breakpoint para.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
 							</div>
+							<Parallax
+								className="intro-parallax"
+								offsetYMax={20}
+								offsetYMin={-20}
+								slowerScrollRate
+								tag="figure"
+								>
+								<h1>CG Artist</h1>
+								</Parallax>
+
 						</div>
 
 						<div className="about">
@@ -39,10 +54,27 @@ export default class App extends React.Component {
 								<div className="about-img">
 									<img className="portlate" src="https://static.pexels.com/photos/157669/portrait-character-black-and-white-lofty-tone-157669.jpeg" alt="My photo"/>
 								</div>
+								<Parallax
+								className="about-parallax"
+								offsetYMax={20}
+								offsetYMin={-20}
+								slowerScrollRate
+								tag="figure"
+								>
+								<h1>Who I am</h1>
+							</Parallax>
 						</div>
 
 						<div className="portfolio">
-							<h2 className="portfolio-title">Portfolio</h2>
+							<Parallax
+								className="portfolio-parallax"
+								offsetYMax={20}
+								offsetYMin={-20}
+								slowerScrollRate
+								tag="figure"
+								>
+							<h1>Portfolio</h1>
+							</Parallax>
 
 							<div className="portfolio-slider">
 								<div className="img-div">
@@ -70,7 +102,7 @@ export default class App extends React.Component {
 								</div>
 
 						</div>
-							<a className="portfolioButton">See More</a>
+							<Link to='/portfolio'>See More</Link>
 						</div>
 
 						<div className="blog">
@@ -82,11 +114,20 @@ export default class App extends React.Component {
 									<a className="blogBottun">Go Blog</a>
 								</div>
 							</div>
+							<Parallax
+								className="blog-parallax"
+								offsetYMax={20}
+								offsetYMin={-20}
+								slowerScrollRate
+								tag="figure"
+								>
+								<h1>My Style</h1>
+							</Parallax>
 						</div>
 
 						<div className="contact">
 							<div className="myInfo">
-								<h1>Satoshi Takasawa</h1>
+								<h1>Satoshi Takazawa</h1>
 								<p>mail.address@mail.com</p>
 								<div className="social">
 									<div className="socialImg">
@@ -143,6 +184,15 @@ export default class App extends React.Component {
 									</form>
 								</div>
 							</div>
+							<Parallax
+								className="contact-parallax"
+								offsetYMax={20}
+								offsetYMin={-20}
+								slowerScrollRate
+								tag="figure"
+								>
+								<h1>Say Hello!</h1>
+							</Parallax>
 							</div>
 						</div>
 			)

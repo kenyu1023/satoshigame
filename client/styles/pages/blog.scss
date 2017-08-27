@@ -1,0 +1,29 @@
+.blog-title {
+        text-align: center;
+        padding: 50px 0;
+        
+    }
+
+.blog-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+
+    .blog-panel {
+        margin: 20px;
+        border: 1px solid red;
+        width: 30%;
+
+            .blog-img-div {
+                width: 300px;
+                height: 300px;
+                margin: auto;
+            }
+
+            .blog-para {
+                width: 50%;
+                margin: 10px auto;
+            } 
+    }
+}
