@@ -6,10 +6,16 @@ export default class App extends React.Component {
 		constructor(props){
 			super(props);
 			this.state = {
-
 			};
+			console.log('asd');
 		}
+
+		componentDidMount(){
+			this.props.loading();
+		}
+
 		render(){
+
 			return (
 				<div>
 						<div className="about-main">

@@ -24,7 +24,7 @@
 .portfolio-main {
     height: 100%;
     width: 90%;
-    padding-left: 180px;
+    // padding-left: 180px;
     margin: 20px auto;
     display: flex;
     //justify-content: center;
@@ -116,5 +116,25 @@
         }
 
         #modal-close {}
+}
+
+.imagePortfolios{
+    position: relative;
+    width: 25%;
+    height: 20vw;
+    overflow: hidden;
+    display: block;
+    box-sizing: border-box;
+    padding: 10px;
+    img{
+        box-sizing: border-box;
+        width: 100%;
+        object-fit: cover;
+        height: 100%;
+        transition: all 0.6s ease;
+        &:hover{
+            transform: scale(1.1);
+        }
+    }
 }
 

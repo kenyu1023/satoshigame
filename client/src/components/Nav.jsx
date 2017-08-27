@@ -14,7 +14,6 @@ export default class Nav extends Component{
 
 	componentWillMount(){
 		if(window.location.href.split('/')[window.location.href.split('/').length-1]==='login'||window.location.href.split('/')[window.location.href.split('/').length-1]==='admin'){
-			console.log(this.state.menuState);
 			this.setState({
 				menuState: this.state.menuState == '' ? 'hide-nav' : ''
 			});
@@ -25,10 +24,10 @@ export default class Nav extends Component{
 		return(
 			<div className={this.state.menuState}>
 				<div className="nav">
-					<Link to="/">Home</Link>
-					<Link to="/about">About</Link>
-					<Link to="/portfolio">Portfolio</Link>
-					<Link to="/blog">Blog</Link>
+					<Link onClick={()=>{this.props.loadingStart()}} to="/">Home</Link>
+					<Link onClick={()=>{this.props.loadingStart()}} to="/about">About</Link>
+					<Link onClick={()=>{this.props.loadingStart()}} to="/portfolio">Portfolio</Link>
+					<Link onClick={()=>{this.props.loadingStart()}} to="/blog">Blog</Link>
 				</div>
 			</div>
 		)

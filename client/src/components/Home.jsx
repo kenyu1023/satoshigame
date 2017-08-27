@@ -15,6 +15,11 @@ export default class App extends React.Component {
 
 			};
 		}
+
+		componentDidMount(){
+			this.props.loading();
+		}
+
 		render(){
 			return (
 				<div>

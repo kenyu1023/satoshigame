@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios'
 import '../../styles/index.scss'
 
 export default class App extends React.Component {
@@ -6,16 +7,33 @@ export default class App extends React.Component {
 		constructor(props){
 			super(props);
 			this.state = {
-
+				workDatas: []
 			};
 
-
-
-			// function ModalImgChange(){
-			// 	var modalImg = document.getElementById("ModalMainImg");
-
-			// }
+			this.updateWorks = this.updateWorks.bind(this);
+			this.updateWorks();
 		}
+
+		shouldComponentUpdate(nextProps, nextState){
+			if(this.state.workDatas === nextState.workDatas){
+				return false;
+			}
+			return true;
+		}
+
+		updateWorks(){
+			axios.get('http://localhost:3001/api/work')
+			.then((response) => {
+				this.setState({
+					workDatas: response.data
+				});
+				this.props.loading();
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+		}
+
 		render(){
 			return (
 				<div>
@@ -25,11 +43,21 @@ export default class App extends React.Component {
 					</div>
 
 					<div className="portfolio-main">
-						<div className="works-panel">
+						{/* <div className="works-panel">
 							<a href="#test"><img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" /></a>
-						</div>
+						</div> */}
 
-						<div className="modal" id="test">
+						{
+							this.state.workDatas.map((data, index) => {
+								return (
+									<div className="imagePortfolios" key={index}>
+										<img src={data.wurl} />
+									</div>
+								)
+							})
+						}
+
+						{/* <div className="modal" id="test">
 							<div className="modal-container">
 								<div className="modal-img">
 									<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" id="ModalMainImg"alt="#" />
@@ -61,93 +89,8 @@ export default class App extends React.Component {
 									<a href="#modal-close">close</a>
 								</div>
 							</div>
-						</div>
+						</div> */}
 
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
-
-						<div className="works-panel">
-							<img src="https://i.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="#" />
-						</div>
 					</div>
 					</div>
 			)
