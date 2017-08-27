@@ -7,6 +7,7 @@
     width: 100%;
     height: 100%;
     display: flex;
+    overflow-x: hidden;
     .topBar{
         position: fixed;
         top: 0;
@@ -17,6 +18,10 @@
         background-color: rgba(0,0,0,0.7);
         color: white;
         flex-direction: row-reverse;
+        z-index: 900;
+        p{
+            margin-right: 20px;
+        }
     }
     .sideBarLeft{
         position: fixed;
@@ -29,16 +34,21 @@
         padding: 60px 5px 10px 5px;
         display: flex;
         flex-direction: column;
+        z-index: 900;
         h2{
             color: white;
         }
         p{
-            padding-left: 30px;
+            padding-left: 20px;
             color: white;
             cursor: pointer;
         }
         hr{
             width: 100%;
+        }
+        i{
+            color: white;
+            margin-right: 10px;
         }
     }
     .spaceLeft{
@@ -48,9 +58,12 @@
         height: 100vh;
     }
     .sideBarRight{
+        overflow: hidden;
         width: 100%;
+        height: 100vh;
         padding: 60px 5px 10px 5px;
         color: white;
+        position: relative;
         h1{
             text-align: center;
         }
@@ -60,6 +73,7 @@
 .works-template, .blog-template{
     display: flex;
     flex-direction: column;
+    padding: 50px 0;
     .action-bar{
         width: 100%;
         display: flex;
@@ -128,13 +142,14 @@
     justify-content: center;
     flex-direction: column;
     margin: 10px 0;
-    transition: all 0.5s ease;
-    // overflow: hidden;
+    transition: all 0.6s ease;
+    overflow: hidden;
     max-height: 100% !important;
+    transform-origin: top;
     &.hide{
         height: 0;
         max-height: 0;
-        transform: scaleY(0);
+        // transform: scaleY(0);
     }
     .post{
         margin-top: 30px;
@@ -148,7 +163,6 @@
     input{
         padding: 5px 8px;
         width: 100%;
-        margin: 10px 15px;
         box-sizing: border-box;
         font-size: 16px;
     }
@@ -187,13 +201,15 @@ img{
 }
 
 .imageWorkBolc{
-    width: 31.83%;
+    position: relative;
+    width: 33.33%;
     height: 25vw;
     overflow: hidden;
     display: block;
-    margin: 0.5%;
     box-sizing: border-box;
+    padding: 10px;
     img{
+        box-sizing: border-box;
         width: 100%;
         object-fit: cover;
         height: 100%;
@@ -202,4 +218,85 @@ img{
             transform: scale(1.1);
         }
     }
+}
+
+.work-option{
+    position: absolute;
+    top: 0;
+    i{
+        margin: 15px 0 0 10px;
+        cursor: pointer;
+        transition: all 0.6s ease;
+        &:hover{
+            transform: scale(1.2);
+            color: red;
+        }
+    }
+}
+
+.admin-modalbox{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.2);
+    display: none;
+    z-index: 1000;
+    &.showmodal {
+        display: block;
+    }
+}
+
+.rightmode{
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 1;
+    height: 100vh;
+    overflow-y: auto;
+    // padding-bottom: 50px;
+    transition: all 0.8s ease;
+    &::-webkit-scrollbar {
+        width: 0px;
+        background: transparent; /* make scrollbar transparent */
+    }
+    &.hideleft{
+        transform: translateX(-120%);
+        opacity: 0;
+        // display: none;
+    }
+    &.hideright{
+        opacity: 0;
+        // display: none;
+        transform: translateX(100%);
+    }
+}
+
+.flexcolumn{
+    display: flex;
+    flex-direction: column;
+}
+
+.workEditLeft{
+    float: left;
+    width: 50%;
+    label, input{
+        display: block;
+    }
+}
+
+.previwDemo{
+    box-sizing: border-box;
+    width: 100%;
+    object-fit: cover;
+    height: 100%;
+    padding: 20px;
+}
+
+.withEdit{
+    width: 80%;
+}
+
+.previewText{
+    text-align: center;
 }

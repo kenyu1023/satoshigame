@@ -7,7 +7,7 @@ export default class Admin extends Component{
 	render(){
 		const Button = withRouter(({ history}) => (
 			<button type='button' onClick={() => {
-					axios.post('/api/users', {
+					axios.post('http://localhost:3001/api/users', {
 						name: this.refs.nameinput.value,
 						upassword: this.refs.passinput.value
 					})

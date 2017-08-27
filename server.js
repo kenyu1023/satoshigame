@@ -5,6 +5,7 @@ import mongoose from 'mongoose'
 import User from './server/user'
 import Blog from './server/blog'
 import Work from './server/work'
+import Category from './server/category'
 
 const app = express()
 const port = process.env.PORT || 3001
@@ -163,6 +164,41 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
     const { id } = request.body
     // console.log(id);
     Work.findByIdAndRemove(id, err => {
+      if (err) response.status(500).send()
+      else {
+        response.json({status:'success'});
+      }
+    })
+  })
+
+  ///////////////////////////////////////
+
+  // Category ///////////////////////////////
+
+  app.post('/api/category', (request, response) => {
+    const { cname } = request.body
+    new Category({
+      cname
+    }).save(err => {
+      if (err) response.status(500)
+      else {
+        response.json({status:'success'});
+      }
+    })
+  })
+
+  app.get('/api/category', (request, response) => {
+    Category.find({}, (err, categoryArray) => {
+      if (err) response.status(500).send()
+      else {
+        response.json(categoryArray);
+      }
+    })
+  })
+
+  app.delete('/api/category', (request, response) => {
+    const { id } = request.body
+    Category.findByIdAndRemove(id, err => {
       if (err) response.status(500).send()
       else {
         response.json({status:'success'});

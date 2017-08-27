@@ -58,7 +58,7 @@ class blog extends Component{
 		let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 		let dateTime = date+' '+time;
 		// alert(this.state.value.toString('html'));
-		axios.post('/api/blog', {
+		axios.post('http://localhost:3001/api/blog', {
 			btitle: this.refs.titledata.value,
 			bcontent: this.state.text,
 			bimage: this.state.insertImage,
@@ -79,7 +79,7 @@ class blog extends Component{
 	}
 
 	updateBlog(){
-		axios.get('/api/blog')
+		axios.get('http://localhost:3001/api/blog')
 		.then((response) => {
 			// console.log(response.data);
 			this.setState({
@@ -94,7 +94,7 @@ class blog extends Component{
 	deleteBlog(id, index){
 		axios({
       method: 'delete',
-      url: '/api/blog',
+      url: 'http://localhost:3001/api/blog',
       data: {
         id,
       }

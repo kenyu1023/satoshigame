@@ -20,16 +20,32 @@ export default class Admin extends Component{
 	constructor(props){
 		super(props);
 		this.state= {
-			selected: 'works'
+			selected: 'works',
+			worksection: '',
+			blogsection: 'hideright'
 		}
-
 		this.changeTemplate = this.changeTemplate.bind(this);
 	}
 
+	componentWillMount(){
+		document.body.style.overflow = "hidden";
+	}
+
 	changeTemplate(template){
-		this.setState({
-			selected: template
-		});
+		if(template == "blog" ){
+			this.setState({
+				selected: template,
+				worksection: 'hideleft',
+				blogsection: ''
+			});
+		}else{
+			this.setState({
+				selected: template,
+				worksection: '',
+				blogsection: 'hideright'
+			});
+
+		}
 	}
 
 	render(){
@@ -51,28 +67,35 @@ export default class Admin extends Component{
 						console.log(error);
 					}); */}
 				}} >
-				LOGOUT
+				<i className="fa fa-sign-out" aria-hidden="true"></i>LOGOUT
 			</p>
 		))
 
 		return(
+
 			<div className="admin-bg">
 				<div className="topBar"><p>Admin</p></div>
 				{/* <Button /> */}
 				<div className="sideBarLeft">
 					<h2>GENERAL</h2>
 					<hr />
-					<p onClick={()=>{ this.changeTemplate('works')}}>WORKS</p>
-					<p onClick={()=>{ this.changeTemplate('blog')}}>BLOG</p>
+					<p onClick={()=>{ this.changeTemplate('works')}}><i className="fa fa-file-image-o" aria-hidden="true"/>WORKS</p>
+					<p onClick={()=>{ this.changeTemplate('blog')}}><i className="fa fa-rss" aria-hidden="true"/>BLOG</p>
 					<h2>PROFILE</h2>
 					<hr />
 					<Button/>
 				</div>
 				<div className="spaceLeft"></div>
 				<div className="sideBarRight">
-					{
+					{/* {
 						this.state.selected == 'works' ? (<Works />) : (<Blog />)
-					}
+					} */}
+					<div id="WorkSectionAdmin" className={'rightmode ' + this.state.worksection}>
+						<Works />
+					</div>
+					<div id="BlogectionAdmin" className={'rightmode ' + this.state.blogsection}>
+						<Blog />
+					</div>
 				</div>
 			</div>
 		)
