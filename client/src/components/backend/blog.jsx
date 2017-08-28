@@ -13,19 +13,21 @@ class blog extends Component{
 		super(props);
 
 		this.state = {
+			actionMode: 0,
 			text: '',
-			showEdit: 'hide',
 			blogDatas: [],
 			insertImage:[],
 			username: '',
 			avatar: '',
 			isUploading: false,
 			progress: 0,
-			avatarURL: ''
+			avatarURL: '',
+			blogModal: 'hidemodal'
 		}
-    this.handleChange = this.handleChange.bind(this)
 
-		this.showMenu = this.showMenu.bind(this);
+		this.closeBlogModal = this.closeBlogModal.bind(this);
+    this.handleChange = this.handleChange.bind(this)
+		this.editBlogChange = this.editBlogChange.bind(this);
 		this.saveBlog = this.saveBlog.bind(this);
 		this.updateBlog = this.updateBlog.bind(this);
 		this.deleteBlog = this.deleteBlog.bind(this);
@@ -38,12 +40,6 @@ class blog extends Component{
     this.setState({ text: value })
   }
 
-	showMenu(){
-		this.setState({
-			showEdit: this.state.showEdit == 'hide' ? '' : 'hide'
-		});
-	}
-
 	getAttrFromString(str, node, attr) {
     var regex = new RegExp('<' + node + ' .*?' + attr + '="(.*?)"', "gi"), result, res = [];
     while ((result = regex.exec(str))) {
@@ -55,39 +51,85 @@ class blog extends Component{
 	saveBlog(){
 		let today = new Date();
 		let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-		let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-		let dateTime = date+' '+time;
+		let dateTime = date;
 		// alert(this.state.value.toString('html'));
-		axios.post('http://localhost:3001/api/blog', {
-			btitle: this.refs.titledata.value,
-			bcontent: this.state.text,
-			bimage: this.state.insertImage,
-			bdate: dateTime
-		})
-		.then(response => {
-			if(response.data.status == 'success'){
-				this.refs.titledata.value = '';
-				this.setState({text: '', insertImage: []});
-				this.updateBlog();
+		if(this.state.text.trim() != "" && this.refs.titledata.value != ""){
+			if(this.state.actionMode == -1){
+				axios.post('http://localhost:3001/api/blog', {
+					btitle: this.refs.titledata.value,
+					bcontent: this.state.text,
+					bimage: this.state.insertImage,
+					bdate: dateTime
+				})
+				.then(response => {
+					if(response.data.status == 'success'){
+						this.refs.titledata.value = '';
+						this.setState({text: '', insertImage: []});
+						this.updateBlog();
+						this.closeBlogModal();
+					}else{
+						alert('Failed..');
+					}
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
 			}else{
-				alert('Failed..');
+				axios.put('http://localhost:3001/api/blog', {
+					id: this.state.actionMode,
+					btitle: this.refs.titledata.value,
+					bcontent: this.state.text,
+					bimage: this.state.insertImage
+				})
+				.then(response => {
+					if(response.data.status == 'success'){
+						this.updateBlog();
+						this.closeBlogModal();
+					}else{
+						alert('Failed..');
+					}
+				})
+				.catch(err => {
+					console.error(new Error(err))
+				})
 			}
-		})
-		.catch(function (error) {
-			console.log(error);
-		});
+		}else{
+			alert('Title or content is empty');
+		}
 	}
 
 	updateBlog(){
 		axios.get('http://localhost:3001/api/blog')
 		.then((response) => {
-			// console.log(response.data);
+			console.log(response.data);
 			this.setState({
 				blogDatas: response.data
 			});
 		})
 		.catch(function (error) {
 			console.log(error);
+		});
+	}
+
+	editBlogChange(index){
+		// console.log(index);
+		if(index == -1){
+			this.refs.reactQuill.getEditor().setText('');
+			this.refs.titledata.value='';
+			this.state.actionMode = -1;
+		}else{
+			this.state.actionMode = this.state.blogDatas[index]._id;
+			this.refs.titledata.value = this.state.blogDatas[index].btitle;
+			this.refs.reactQuill.getEditor().clipboard.dangerouslyPasteHTML(this.state.blogDatas[index].bcontent,'silent');
+		}
+		this.setState({
+			blogModal: ""
+		});
+	}
+
+	closeBlogModal(){
+		this.setState({
+			blogModal: "hidemodal"
 		});
 	}
 
@@ -161,15 +203,18 @@ class blog extends Component{
 
 		const modules = {
 			formula: true,
-        toolbar: {
-          container: [[{ 'header': [1, 2, false] }],
-					['bold', 'italic', 'underline','strike', 'blockquote'],
-					[{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'},{'align': 'center'},{'align': 'right'},{'align': 'justify'}],
-					['link','image'],
-					['clean']],
-					handlers: {
-							'image': this.imageHandler
-					}
+      toolbar: {
+				container: [[{ 'header': [1, 2, false] }],
+				['bold', 'italic', 'underline','strike', 'blockquote'],
+				[{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'},{'align': 'center'},{'align': 'right'},{'align': 'justify'}],
+				['link','image'],
+				['clean']],
+				handlers: {
+						'image': this.imageHandler
+				}
+			},
+			clipboard: {
+				matchVisual: false
 			}
 		}
 
@@ -184,24 +229,7 @@ class blog extends Component{
 			<div className="blog-template">
 				<h1>BLOG</h1>
 				<div className="action-bar">
-					<p onClick={this.showMenu}><i className="fa fa-plus-circle" aria-hidden="true"></i> New Blog</p>
-				</div>
-				<div className={"action-blog " + this.state.showEdit}>
-						<FileUploader className="hidden-class" id="imageselect"
-							accept="image/*"
-							name="avatar"
-							randomizeFilename
-							storageRef={firebase.storage().ref('satoshigame/blog')}
-							onUploadStart={this.handleUploadStart}
-							onUploadError={this.handleUploadError}
-							onUploadSuccess={this.handleUploadSuccess}
-							onProgress={this.handleProgress}
-						/>
-					<input ref="titledata" type="text" placeholder="Title" maxLength="100" required />
-					<ReactQuill ref="reactQuill" theme="snow" modules={modules}
-                    formats={formats} value={this.state.text}
-                  onChange={this.handleChange} />
-					<button className="post" onClick={this.saveBlog}>POST BLOG</button>
+					<p onClick={()=>{this.editBlogChange(-1)}}><i className="fa fa-plus-circle" aria-hidden="true"></i> New Blog</p>
 				</div>
 				<div className="blog-content">
 					{
@@ -213,16 +241,32 @@ class blog extends Component{
 									<p>{data.bdate}</p>
 									<hr />
 									<i onClick={()=>{ this.deleteBlog(data._id, index) }} className="fa fa-trash" aria-hidden="true"></i>
-									<i className="fa fa-pencil-square" aria-hidden="true"></i>
+									<i onClick={()=>{this.editBlogChange(index)}} className="fa fa-pencil-square" aria-hidden="true"></i>
 								</div>
 							)
 						})
 					}
-					{/* <div className="blog-ad-style">
-						<h3>Blog 1</h3>
-						<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-						<p>- Delete Blog</p>
-					</div> */}
+				</div>
+				<div className={"admin-modalboxblog " + this.state.blogModal}>
+					<div className={"action-blog"}>
+						<h1>Edit Blog</h1>
+						<FileUploader className="hidden-class" id="imageselect"
+							accept="image/*"
+							name="avatar"
+							randomizeFilename
+							storageRef={firebase.storage().ref('satoshigame/blog')}
+							onUploadStart={this.handleUploadStart}
+							onUploadError={this.handleUploadError}
+							onUploadSuccess={this.handleUploadSuccess}
+							onProgress={this.handleProgress}
+						/>
+						<input ref="titledata" type="text" placeholder="Title" maxLength="100" required />
+						<ReactQuill ref="reactQuill" theme="snow" modules={modules}
+											formats={formats} value={this.state.text}
+										onChange={this.handleChange} />
+						<button className="post" onClick={this.saveBlog}>POST BLOG</button>
+						<button className="post" onClick={this.closeBlogModal}>CANCEL</button>
+					</div>
 				</div>
 			</div>
 	)}

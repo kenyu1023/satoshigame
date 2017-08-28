@@ -13,6 +13,10 @@ export default class App extends React.Component {
 			};
 
 			this.updateWorks = this.updateWorks.bind(this);
+
+		}
+
+		componentWillMount(){
 			this.updateWorks();
 		}
 
@@ -31,15 +35,6 @@ export default class App extends React.Component {
 				.catch(function (error) {
 					console.log(error);
 				});
-		}
-
-		shouldComponentUpdate(nextProps, nextState){
-			if(this.state.loaded != nextState.loaded ){
-				return true;
-			}else{
-				return false;
-			}
-
 		}
 
 		render(){

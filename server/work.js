@@ -7,6 +7,7 @@ const WorkSchema = new mongoose.Schema({
   wurl: String,
   wfile: String,
   wembed: String,
+  wcategory: [{type: mongoose.Schema.Types.ObjectId, ref: 'Category'}],
   wicons: Object,
   wcontent: String,
   bdate: String

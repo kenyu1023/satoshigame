@@ -115,13 +115,23 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
     })
   })
 
+  app.put('/api/blog', (request, response) => {
+    const {id, btitle, bcontent, bimage } = request.body
+    Blog.findByIdAndUpdate(id, { btitle, bcontent,bimage }, err => {
+      if (err) response.status(500).send()
+      else {
+        response.json({status:'success'});
+      }
+    })
+  })
+
   app.get('/api/blog', (request, response) => {
     Blog.find({}, (err, blogArray) => {
       if (err) response.status(500).send()
       else {
         response.json(blogArray);
       }
-    })
+    }).sort( { _id: -1 } );
   })
 
   app.delete('/api/blog', (request, response) => {
@@ -140,9 +150,9 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
   // Work ///////////////////////////////
 
   app.post('/api/work', (request, response) => {
-    const { wtitle, wurl, wfile, wembed, wicons, wcontent, wdate } = request.body
+    const { wtitle, wurl, wfile, wembed, wcategory, wicons, wcontent, wdate } = request.body
     new Work({
-      wtitle, wurl, wfile, wembed, wicons, wcontent, wdate
+      wtitle, wurl, wfile, wembed, wicons ,wcategory , wcontent, wdate
     }).save(err => {
       if (err) response.status(500)
       else {
@@ -152,12 +162,14 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
   })
 
   app.get('/api/work', (request, response) => {
-    Work.find({}, (err, workArray) => {
-      if (err) response.status(500).send()
-      else {
-        response.json(workArray);
+    Work.find().populate('wcategory').sort( { _id: -1 } ).exec(
+      (err, workArray) => {
+        if (err) response.status(500).send()
+        else {
+          response.json(workArray);
+        }
       }
-    })
+    );
   })
 
   app.delete('/api/work', (request, response) => {
@@ -187,13 +199,24 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
     })
   })
 
+  app.put('/api/category', (request, response) => {
+    const { id, cname } = request.body
+    console.log(id);
+    User.findByIdAndUpdate(id, { "cname": cname }, err => {
+      if (err) response.status(500).send()
+      else {
+        response.json({status:'success'});
+      }
+    })
+  })
+
   app.get('/api/category', (request, response) => {
     Category.find({}, (err, categoryArray) => {
       if (err) response.status(500).send()
       else {
         response.json(categoryArray);
       }
-    })
+    }).sort( { _id: 1 } );
   })
 
   app.delete('/api/category', (request, response) => {

@@ -7,7 +7,6 @@ export default class App extends React.Component {
 			super(props);
 			this.state = {
 			};
-			console.log('asd');
 		}
 
 		componentDidMount(){
@@ -15,7 +14,6 @@ export default class App extends React.Component {
 		}
 
 		render(){
-
 			return (
 				<div>
 						<div className="about-main">

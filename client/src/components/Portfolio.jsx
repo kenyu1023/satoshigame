@@ -14,13 +14,6 @@ export default class App extends React.Component {
 			this.updateWorks();
 		}
 
-		shouldComponentUpdate(nextProps, nextState){
-			if(this.state.workDatas === nextState.workDatas){
-				return false;
-			}
-			return true;
-		}
-
 		updateWorks(){
 			axios.get('http://localhost:3001/api/work')
 			.then((response) => {

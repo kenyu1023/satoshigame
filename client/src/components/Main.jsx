@@ -13,7 +13,7 @@ export default class Main extends Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			loading: ''
+			loading: 'hide'
 		}
 
 		this.loadingShow = this.loadingShow.bind(this);
