@@ -14,11 +14,14 @@ export default class works extends Component{
 			showEdit: 'hide',
 			workDatas: [],
 			categoriesDatas: [],
+			iconsDatas: [],
 			sortWorkArray: [],
+			iconsDatas: [],
 			isUploading: false,
 			progress: 0,
 			avatarURL: '',
 			file: '',
+			fileIcon: '',
 			imagePreviewUrl: '',
 			showEditCategory: 'hide',
 			categoryModal: 'hidemodal'
@@ -30,13 +33,16 @@ export default class works extends Component{
 		this.showMenuCategory = this.showMenuCategory.bind(this);
 		this.saveWork = this.saveWork.bind(this);
 		this.updateWorks = this.updateWorks.bind(this);
-		this.imageHandler= this.imageHandler.bind(this);
+		this._handleImageIconChange = this._handleImageIconChange.bind(this);
+		this.saveIcon = this.saveIcon.bind(this);
+		this.updateIcons = this.updateIcons.bind(this);
 
 		this.editOptionChange = this.editOptionChange.bind(this);
 		this.closeOptionModal = this.closeOptionModal.bind(this);
 
 		this.updateWorks();
 		this.updateCategory();
+		this.updateIcons();
 	}
 
 	editOptionChange(){
@@ -139,6 +145,7 @@ export default class works extends Component{
 						// // wtitle, wurl, wfile, wembed, wicons, wcontent, wdate
 						axios.post('http://localhost:3001/api/work', {
 							wtitle: this.refs.titledata.value,
+							wembed: this.refs.embeddata.value,
 							wurl: snapshot.downloadURL,
 							wfile: this.state.file.name,
 							wcategory: this.refs.categoryId.value,
@@ -188,6 +195,11 @@ export default class works extends Component{
     }
 
     reader.readAsDataURL(file)
+	}
+
+	_handleImageIconChange(e) {
+    e.preventDefault();
+		this.state.fileIcon = e.target.files[0];
   }
 
 	showMenu(){
@@ -270,21 +282,68 @@ export default class works extends Component{
 		}
 	}
 
-	handleChangeUsername = (event) => this.setState({username: event.target.value});
-  handleUploadStart = () => this.setState({isUploading: true, progress: 0});
-  handleProgress = (progress) => this.setState({progress});
-  handleUploadError = (error) => {
-    this.setState({isUploading: false});
-    console.error(error);
-  }
-  handleUploadSuccess = (filename) => {
-    this.setState({avatar: filename, progress: 100, isUploading: false});
-		firebase.storage().ref('satoshigame/work').child(filename).getDownloadURL().then(url => this.setState({avatarURL: url}
-		));
-	};
+	saveIcon(){
+		firebase.storage().ref().child('satoshigame/icon/'+this.state.fileIcon.name).put(this.state.fileIcon).then((snapshot) => {
+			if(snapshot.state == 'success'){
+				// dname, dimage, durl
+				axios.post('http://localhost:3001/api/icon', {
+					dname: this.refs.iconnamedata.value,
+					dimage: this.state.fileIcon.name,
+					durl: snapshot.downloadURL
+				})
+				.then(response => {
+					if(response.data.status == 'success'){
+						console.log('success');
+						this.refs.iconnamedata.value = '';
+						this.updateIcons();
+					}else{
+						alert('Failed..');
+					}
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+			}else{
+				alert("Error Upload.. Please try again");
+			}
+		});
+	}
 
-	imageHandler(){
-		document.getElementById('imageselect').click();
+	updateIcons(){
+		axios.get('http://localhost:3001/api/icon')
+		.then((response) => {
+			this.setState({
+				iconsDatas: response.data
+			});
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+	}
+
+	deleteIcon(id, dname){
+		axios({
+      method: 'delete',
+      url: 'http://localhost:3001/api/icon',
+      data: {
+        id,
+      }
+    })
+    .then(response => {
+			if(response.data.status == 'success'){
+				var desertRef = firebase.storage().ref('satoshigame/icon').child(dname);
+				desertRef.delete().then(() => {
+					this.updateIcons();
+				}).catch(function(error) {
+					console.log(error);
+				});
+			}else{
+				alert('Failed..');
+			}
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
 	}
 
 	render(){
@@ -299,8 +358,10 @@ export default class works extends Component{
 					<div className="withEdit" ref="editwork">
 						<div className="workEditLeft">
 							<h3>Edit Work</h3>
+							<input ref="titledata" type="text" placeholder="Title*" maxLength="100" required />
 							<input type="file"  ref="imageFile" onChange={(e)=>this._handleImageChange(e)} />
-							<input ref="titledata" type="text" placeholder="Title" maxLength="100" required />
+							<label>Embed</label>
+							<input ref="embeddata" type="text" placeholder="Embed Optional" maxLength="100" />
 							<label>Category</label>
 							<select ref="categoryId">
 								<option value="default">Select the category</option>
@@ -312,6 +373,18 @@ export default class works extends Component{
 									})
 								}
 							</select>
+							<label>Software</label>
+							<div className="developerIconWork">
+								{
+									this.state.iconsDatas.map((data, index) => {
+										return (
+											<div key={index} className="iconListSytleWork">
+												<img src={data.durl} />
+											</div>
+										)
+									})
+								}
+							</div>
 							<div>
 								<button className="post" onClick={()=>{
 									this.saveWork();
@@ -351,9 +424,22 @@ export default class works extends Component{
 										<img src={data.wurl} />
 										<div className="work-option">
 											<i onClick={()=>{ this.deleteWork(data._id,data.wfile);}} className="fa fa-trash" aria-hidden="true"></i>
+											<i className="fa fa-pencil-square" aria-hidden="true"></i>
+											{
+												data.wembed != '' ?  <i className="fa fa-cube" aria-hidden="true"></i> : ''
+											}
 										</div>
 										<div className="categoryShowImage">
-											 { data.wcategory[0].cname }
+											 <div>{ data.wcategory[0].cname }</div>
+										</div>
+										<div className="icon-section-work">
+											{
+												data.wicons.map((dataicon, index) => {
+													return (
+														<img key={index} src={dataicon.durl} />
+													)
+												})
+											}
 										</div>
 									</div>
 								</div>
@@ -389,6 +475,39 @@ export default class works extends Component{
 											)
 										})
 									}
+							</div>
+						</div>
+					</div>
+					<div id="editWorkCategoryBlock" className={"action-work-option"}>
+						<div ref="editworkCategory" className="withEdit">
+							<h1>DEVELOP ICONS</h1>
+							<div className="workEditLeft">
+								<h3>ICONS</h3>
+								<input ref="iconnamedata" type="text" placeholder="Category name" maxLength="50"  />
+								<input type="file"  ref="imageIconFile" onChange={(e)=>this._handleImageIconChange(e)} />
+								<div>
+									<button className="post" onClick={()=>{
+										this.saveIcon();
+										}}>
+										SAVE ICON
+									</button>
+								</div>
+							</div>
+							<div className="workEditLeft editIcon-list">
+								<h3>ICON LIST</h3>
+								<div className="editIcon-list-flex">
+									{
+										this.state.iconsDatas.map((data, index) => {
+											return (
+												<div key={index} className="iconListSytle">
+													<i className="fa fa-times-circle-o" onClick={()=>{this.deleteIcon(data._id,data.dimage)}} aria-hidden="true"></i>
+													<img src={data.durl} />
+													<p>{data.dname}</p>
+												</div>
+											)
+										})
+									}
+								</div>
 							</div>
 						</div>
 					</div>

@@ -8,7 +8,7 @@ const WorkSchema = new mongoose.Schema({
   wfile: String,
   wembed: String,
   wcategory: [{type: mongoose.Schema.Types.ObjectId, ref: 'Category'}],
-  wicons: Object,
+  wicons: [{type: mongoose.Schema.Types.ObjectId, ref: 'DevIcon'}],
   wcontent: String,
   bdate: String
 })

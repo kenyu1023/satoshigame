@@ -6,6 +6,7 @@ import User from './server/user'
 import Blog from './server/blog'
 import Work from './server/work'
 import Category from './server/category'
+import DevIcon from './server/devicon'
 
 const app = express()
 const port = process.env.PORT || 3001
@@ -162,7 +163,7 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
   })
 
   app.get('/api/work', (request, response) => {
-    Work.find().populate('wcategory').sort( { _id: -1 } ).exec(
+    Work.find().populate('wcategory').populate('wicons').sort( { _id: -1 } ).exec(
       (err, workArray) => {
         if (err) response.status(500).send()
         else {
@@ -222,6 +223,52 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
   app.delete('/api/category', (request, response) => {
     const { id } = request.body
     Category.findByIdAndRemove(id, err => {
+      if (err) response.status(500).send()
+      else {
+        response.json({status:'success'});
+      }
+    })
+  })
+
+  ///////////////////////////////////////
+
+  // Icon ///////////////////////////////
+
+  app.post('/api/icon', (request, response) => {
+    const { dname, dimage, durl } = request.body
+    new DevIcon({
+      dname, dimage, durl
+    }).save(err => {
+      if (err) response.status(500)
+      else {
+        response.json({status:'success'});
+      }
+    })
+  })
+
+  app.put('/api/icon', (request, response) => {
+    const { id, dname, dimage, durl } = request.body
+    console.log(id);
+    DevIcon.findByIdAndUpdate(id, { "cname": cname }, err => {
+      if (err) response.status(500).send()
+      else {
+        response.json({status:'success'});
+      }
+    })
+  })
+
+  app.get('/api/icon', (request, response) => {
+    DevIcon.find({}, (err, iconArray) => {
+      if (err) response.status(500).send()
+      else {
+        response.json(iconArray);
+      }
+    }).sort( { _id: 1 } );
+  })
+
+  app.delete('/api/icon', (request, response) => {
+    const { id } = request.body
+    DevIcon.findByIdAndRemove(id, err => {
       if (err) response.status(500).send()
       else {
         response.json({status:'success'});
