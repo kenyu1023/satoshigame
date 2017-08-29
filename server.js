@@ -162,6 +162,24 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
     })
   })
 
+  app.put('/api/work', (request, response) => {
+    const { id, wtitle, wurl, wfile, wembed, wcategory, wicons, wcontent, wdate } = request.body
+    Work.findByIdAndUpdate(id, { 
+      "wtitle": wtitle,
+      "wurl": wurl,
+      "wfile": wfile,
+      "wembed": wembed,
+      "wcategory": wcategory,
+      "wicons": wicons,
+      "wcontent": wcontent
+    }, err => {
+      if (err) response.status(500).send()
+      else {
+        response.json({status:'success'});
+      }
+    })
+  })
+
   app.get('/api/work', (request, response) => {
     Work.find().populate('wcategory').populate('wicons').sort( { _id: -1 } ).exec(
       (err, workArray) => {
@@ -247,7 +265,6 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
 
   app.put('/api/icon', (request, response) => {
     const { id, dname, dimage, durl } = request.body
-    console.log(id);
     DevIcon.findByIdAndUpdate(id, { "cname": cname }, err => {
       if (err) response.status(500).send()
       else {

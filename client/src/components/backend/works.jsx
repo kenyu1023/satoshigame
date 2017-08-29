@@ -25,6 +25,7 @@ export default class works extends Component{
 			file: '',
 			fileIcon: '',
 			cateditid: 0,
+			worksEditId: 0,
 			imagePreviewUrl: '',
 			showEditCategory: 'hide',
 			categoryModal: 'hidemodal'
@@ -41,6 +42,7 @@ export default class works extends Component{
 		this.updateIcons = this.updateIcons.bind(this);
 		this.categoryselected = this.categoryselected.bind(this);
 		this.iconsselected = this.iconsselected.bind(this);
+		this.worksEditMode = this.worksEditMode.bind(this);
 
 		this.editOptionChange = this.editOptionChange.bind(this);
 		this.closeOptionModal = this.closeOptionModal.bind(this);
@@ -165,59 +167,106 @@ export default class works extends Component{
 	saveWork(){
 		if(this.refs.titledata.value != ""){
 			if(this.refs.categoryId.value != "default"){
-				firebase.storage().ref().child('satoshigame/work/'+this.state.file.name).put(this.state.file).then((snapshot) => {
-					if(snapshot.state == 'success'){
+				if(this.state.worksEditId == 0){
+					firebase.storage().ref().child('satoshigame/work/'+this.state.file.name).put(this.state.file).then((snapshot) => {
+						if(snapshot.state == 'success'){
 
-						let today = new Date();
-						let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-						let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-						let dateTime = date+' '+time;
-						// // wtitle, wurl, wfile, wembed, wicons, wcontent, wdate
-						axios.post('http://localhost:3001/api/work', {
-							wtitle: this.refs.titledata.value,
-							wembed: this.refs.embeddata.value,
-							wurl: snapshot.downloadURL,
-							wfile: this.state.file.name,
-							wcategory: this.refs.categoryId.value,
-							wicons: this.state.selectedIcons,
-							wcontent: '',
-							wdate: dateTime
-						})
-						.then(response => {
-							if(response.data.status == 'success'){
-								// console.log('success');
-								this.updateWorks();
-								clearTimeout(timeout);
-								document.getElementById('editWorkBlock').style.height = this.refs.editwork.clientHeight + 'px';
-								timeout = setTimeout(function() {
-									document.getElementById('editWorkBlock').style.height = '0px';
-								}, 50);
+							let today = new Date();
+							let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+							let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+							let dateTime = date+' '+time;
+							// // wtitle, wurl, wfile, wembed, wicons, wcontent, wdate
+							axios.post('http://localhost:3001/api/work', {
+								wtitle: this.refs.titledata.value,
+								wembed: this.refs.embeddata.value,
+								wurl: snapshot.downloadURL,
+								wfile: this.state.file.name,
+								wcategory: this.refs.categoryId.value,
+								wicons: this.state.selectedIcons,
+								wcontent: '',
+								wdate: dateTime
+							})
+							.then(response => {
+								if(response.data.status == 'success'){
+									// console.log('success');
+									this.updateWorks();
+									clearTimeout(timeout);
+									document.getElementById('editWorkBlock').style.height = this.refs.editwork.clientHeight + 'px';
+									timeout = setTimeout(function() {
+										document.getElementById('editWorkBlock').style.height = '0px';
+									}, 50);
 
-								this.state.WorkShowIcons.map((data)=>{
-									data.cselected = "";
-								});
+									this.state.WorkShowIcons.map((data)=>{
+										data.cselected = "";
+									});
 
-								this.setState({
-									showEdit: this.state.showEdit == 'hide' ? '' : 'hide',
-									WorkShowIcons: this.state.WorkShowIcons,
-									selectedIcons: [],
-									imagePreviewUrl: '',
-									file: ''
-								});
+									this.setState({
+										showEdit: this.state.showEdit == 'hide' ? '' : 'hide',
+										WorkShowIcons: this.state.WorkShowIcons,
+										selectedIcons: [],
+										imagePreviewUrl: '',
+										file: ''
+									});
 
-								this.refs.titledata.value = "";
-								this.refs.embeddata.value = "";
-								this.refs.imageFile.value = null;
+									this.refs.titledata.value = "";
+									this.refs.embeddata.value = "";
+									this.refs.imageFile.value = null;
 
-							}else{
-								alert('Failed..');
-							}
-						})
-						.catch(function (error) {
-							console.log(error);
-						});
-					}
-				});
+								}else{
+									alert('Failed..');
+								}
+							})
+							.catch(function (error) {
+								console.log(error);
+							});
+						}
+					});
+				}else{
+					axios.put('http://localhost:3001/api/work', {
+						id: this.state.worksEditId,
+						wtitle: this.refs.titledata.value,
+						wembed: this.refs.embeddata.value,
+						wurl: this.state.imagePreviewUrl,
+						wfile: this.state.file.name,
+						wcategory: this.refs.categoryId.value,
+						wicons: this.state.selectedIcons,
+						wcontent: ''
+					})
+					.then(response => {
+						if(response.data.status == 'success'){
+							// console.log('success');
+							this.updateWorks();
+							clearTimeout(timeout);
+							document.getElementById('editWorkBlock').style.height = this.refs.editwork.clientHeight + 'px';
+							timeout = setTimeout(function() {
+								document.getElementById('editWorkBlock').style.height = '0px';
+							}, 50);
+
+							this.state.WorkShowIcons.map((data)=>{
+								data.cselected = "";
+							});
+
+							this.setState({
+								showEdit: this.state.showEdit == 'hide' ? '' : 'hide',
+								WorkShowIcons: this.state.WorkShowIcons,
+								selectedIcons: [],
+								imagePreviewUrl: '',
+								file: '',
+								worksEditId: 0
+							});
+
+							this.refs.titledata.value = "";
+							this.refs.embeddata.value = "";
+							this.refs.imageFile.value = null;
+
+						}else{
+							alert('Failed..');
+						}
+					})
+					.catch(function (error) {
+						console.log(error);
+					});
+				}
 			}else{
 				alert('Please select the category');
 			}
@@ -441,9 +490,43 @@ export default class works extends Component{
 		});
 	}
 
+	worksEditMode(id, index){
+		this.refs.titledata.value = this.state.workDatas[index].wtitle;
+		this.refs.embeddata.value = this.state.workDatas[index].wembed;
+		this.refs.categoryId.value = this.state.workDatas[index].wcategory[0]._id;
+
+		this.state.WorkShowIcons.map((data2, index2)=>{
+			this.state.WorkShowIcons[index2].cselected = "";
+		});
+		this.state.selectedIcons = [];
+
+		this.state.workDatas[index].wicons.map((data)=>{
+			this.state.WorkShowIcons.map((data2, index2)=>{
+				if(data._id == data2._id){
+					this.state.WorkShowIcons[index2].cselected = "selectedIconsSave";
+					this.state.selectedIcons.push(data2._id);
+				}
+			});
+		});
+
+		clearTimeout(timeout);
+		document.getElementById('editWorkBlock').style.height = this.refs.editwork.clientHeight + 'px';
+		timeout = setTimeout(function() {
+			document.getElementById('editWorkBlock').style.height = 'auto';
+		}, 610);
+
+		this.setState({
+			showEdit: this.state.showEdit = '',
+			imagePreviewUrl: this.state.workDatas[index].wurl,
+			WorkShowIcons: this.state.WorkShowIcons,
+			worksEditId: id
+		});
+		document.getElementById('WorkSectionAdmin').scrollTop = 0;
+	}
+
 	render(){
 		return (
-			<div className="works-template">
+			<div name="worktemplate" className="works-template">
 				<h1>WORKS</h1>
 				<div className="action-bar">
 					<p onClick={this.showMenu}><i className="fa fa-plus-circle" aria-hidden="true"></i> New Work</p>
@@ -519,7 +602,7 @@ export default class works extends Component{
 										<img src={data.wurl} />
 										<div className="work-option">
 											<i onClick={()=>{ this.deleteWork(data._id,data.wfile);}} className="fa fa-trash" aria-hidden="true"></i>
-											<i className="fa fa-pencil-square" aria-hidden="true"></i>
+											<i onClick={()=>{this.worksEditMode(data._id, index)}} className="fa fa-pencil-square" aria-hidden="true"></i>
 											{
 												data.wembed != '' ?  <i className="fa fa-cube" aria-hidden="true"></i> : ''
 											}

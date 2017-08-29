@@ -24,6 +24,7 @@
     "react-quill": "^1.1.0",
     "react-render-html": "^0.5.0",
     "react-router-dom": "^4.1.2",
+    "react-scroll": "^1.5.4",
     "react-scroll-parallax": "^1.0.0",
     "react-slick": "^0.14.11",
     "sass-loader": "^6.0.2",
