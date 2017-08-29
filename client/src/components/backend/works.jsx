@@ -43,6 +43,7 @@ export default class works extends Component{
 		this.categoryselected = this.categoryselected.bind(this);
 		this.iconsselected = this.iconsselected.bind(this);
 		this.worksEditMode = this.worksEditMode.bind(this);
+		this.cancelWork = this.cancelWork.bind(this);
 
 		this.editOptionChange = this.editOptionChange.bind(this);
 		this.closeOptionModal = this.closeOptionModal.bind(this);
@@ -50,6 +51,33 @@ export default class works extends Component{
 		this.updateWorks();
 		this.updateCategory();
 		this.updateIcons();
+	}
+
+	cancelWork(){
+
+		clearTimeout(timeout);
+		document.getElementById('editWorkBlock').style.height = this.refs.editwork.clientHeight + 'px';
+		timeout = setTimeout(function() {
+			document.getElementById('editWorkBlock').style.height = '0px';
+		}, 50);
+
+		this.refs.categoryId.value = "default";
+		this.state.WorkShowIcons.map((data2, index2)=>{
+			this.state.WorkShowIcons[index2].cselected = "";
+		});
+
+		this.setState({
+			showEdit: 'hide',
+			WorkShowIcons: this.state.WorkShowIcons,
+			selectedIcons: [],
+			imagePreviewUrl: '',
+			file: '',
+			worksEditId: 0
+		});
+
+		this.refs.titledata.value = "";
+		this.refs.embeddata.value = "";
+		this.refs.imageFile.value = null;
 	}
 
 	editOptionChange(){
@@ -303,6 +331,24 @@ export default class works extends Component{
 			timeout = setTimeout(function() {
 				document.getElementById('editWorkBlock').style.height = 'auto';
 			}, 610);
+
+			this.refs.categoryId.value = "default";
+			this.state.WorkShowIcons.map((data2, index2)=>{
+				this.state.WorkShowIcons[index2].cselected = "";
+			});
+
+			this.setState({
+				showEdit: 'hide',
+				WorkShowIcons: this.state.WorkShowIcons,
+				selectedIcons: [],
+				imagePreviewUrl: '',
+				file: '',
+				worksEditId: 0
+			});
+
+			this.refs.titledata.value = "";
+			this.refs.embeddata.value = "";
+			this.refs.imageFile.value = null;
 			// document.getElementById('editWorkBlock').style.height = "auto";
 		}else{
 			clearTimeout(timeout);
@@ -491,16 +537,17 @@ export default class works extends Component{
 	}
 
 	worksEditMode(id, index){
-		this.refs.titledata.value = this.state.workDatas[index].wtitle;
-		this.refs.embeddata.value = this.state.workDatas[index].wembed;
-		this.refs.categoryId.value = this.state.workDatas[index].wcategory[0]._id;
+		console.log(this.state.sortWorkArray);
+		this.refs.titledata.value = this.state.sortWorkArray[index].wtitle;
+		this.refs.embeddata.value = this.state.sortWorkArray[index].wembed;
+		this.refs.categoryId.value = this.state.sortWorkArray[index].wcategory[0]._id;
 
 		this.state.WorkShowIcons.map((data2, index2)=>{
 			this.state.WorkShowIcons[index2].cselected = "";
 		});
 		this.state.selectedIcons = [];
 
-		this.state.workDatas[index].wicons.map((data)=>{
+		this.state.sortWorkArray[index].wicons.map((data)=>{
 			this.state.WorkShowIcons.map((data2, index2)=>{
 				if(data._id == data2._id){
 					this.state.WorkShowIcons[index2].cselected = "selectedIconsSave";
@@ -517,7 +564,7 @@ export default class works extends Component{
 
 		this.setState({
 			showEdit: this.state.showEdit = '',
-			imagePreviewUrl: this.state.workDatas[index].wurl,
+			imagePreviewUrl: this.state.sortWorkArray[index].wurl,
 			WorkShowIcons: this.state.WorkShowIcons,
 			worksEditId: id
 		});
@@ -569,6 +616,11 @@ export default class works extends Component{
 									}}>
 									POST WORK
 								</button>
+								<button className="post" onClick={()=>{
+									this.cancelWork();
+									}}>
+									CANCEL
+								</button>
 							</div>
 						</div>
 						<div className="workEditLeft">
@@ -601,8 +653,8 @@ export default class works extends Component{
 									<div className="overflowh">
 										<img src={data.wurl} />
 										<div className="work-option">
-											<i onClick={()=>{ this.deleteWork(data._id,data.wfile);}} className="fa fa-trash" aria-hidden="true"></i>
-											<i onClick={()=>{this.worksEditMode(data._id, index)}} className="fa fa-pencil-square" aria-hidden="true"></i>
+											<i onClick={()=>{ this.deleteWork(data._id,data.wfile)}} className="fa fa-trash" aria-hidden="true"></i>
+											<i onClick={()=>{ this.worksEditMode(data._id, index)}} className="fa fa-pencil-square" aria-hidden="true"></i>
 											{
 												data.wembed != '' ?  <i className="fa fa-cube" aria-hidden="true"></i> : ''
 											}
