@@ -18,10 +18,13 @@ export default class works extends Component{
 			sortWorkArray: [],
 			iconsDatas: [],
 			isUploading: false,
+			WorkShowIcons: [],
+			selectedIcons: [],
 			progress: 0,
 			avatarURL: '',
 			file: '',
 			fileIcon: '',
+			cateditid: 0,
 			imagePreviewUrl: '',
 			showEditCategory: 'hide',
 			categoryModal: 'hidemodal'
@@ -36,6 +39,8 @@ export default class works extends Component{
 		this._handleImageIconChange = this._handleImageIconChange.bind(this);
 		this.saveIcon = this.saveIcon.bind(this);
 		this.updateIcons = this.updateIcons.bind(this);
+		this.categoryselected = this.categoryselected.bind(this);
+		this.iconsselected = this.iconsselected.bind(this);
 
 		this.editOptionChange = this.editOptionChange.bind(this);
 		this.closeOptionModal = this.closeOptionModal.bind(this);
@@ -59,21 +64,40 @@ export default class works extends Component{
 
 	saveCategory(){
 		if(this.refs.categorydata.value != ''){
-			axios.post('http://localhost:3001/api/category', {
-				cname: this.refs.categorydata.value
-			})
-			.then(response => {
-				if(response.data.status == 'success'){
-					console.log('success');
-					this.refs.categorydata.value = '';
-					this.updateCategory();
-				}else{
-					alert('Failed..');
-				}
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
+			if(this.state.cateditid == 0){
+				axios.post('http://localhost:3001/api/category', {
+					cname: this.refs.categorydata.value
+				})
+				.then(response => {
+					if(response.data.status == 'success'){
+						console.log('success');
+						this.refs.categorydata.value = '';
+						this.updateCategory();
+					}else{
+						alert('Failed..');
+					}
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+			}else{
+				axios.put('http://localhost:3001/api/category', {
+					id: this.state.cateditid,
+					cname: this.refs.categorydata.value
+				})
+				.then(response => {
+					if(response.data.status == 'success'){
+						this.state.cateditid = 0;
+						this.refs.categorydata.value = '';
+						this.updateCategory();
+					}else{
+						alert('Failed..');
+					}
+				})
+				.catch(err => {
+					console.error(new Error(err))
+				})
+			}
 		}else{
 			alert('Input category name please');
 		}
@@ -103,10 +127,16 @@ export default class works extends Component{
 	updateCategory(){
 		axios.get('http://localhost:3001/api/category')
 		.then((response) => {
-			console.log(response.data);
-			this.setState({
-				categoriesDatas: response.data
+			// console.log(response.data);
+			let dataCat = [];
+			response.data.map((data, index)=>{
+				data.cselected = "";
+				dataCat.push(data);
 			});
+			this.setState({
+				categoriesDatas: dataCat
+			});
+
 		})
 		.catch(function (error) {
 			console.log(error);
@@ -149,6 +179,7 @@ export default class works extends Component{
 							wurl: snapshot.downloadURL,
 							wfile: this.state.file.name,
 							wcategory: this.refs.categoryId.value,
+							wicons: this.state.selectedIcons,
 							wcontent: '',
 							wdate: dateTime
 						})
@@ -161,9 +192,23 @@ export default class works extends Component{
 								timeout = setTimeout(function() {
 									document.getElementById('editWorkBlock').style.height = '0px';
 								}, 50);
+
+								this.state.WorkShowIcons.map((data)=>{
+									data.cselected = "";
+								});
+
 								this.setState({
 									showEdit: this.state.showEdit == 'hide' ? '' : 'hide',
+									WorkShowIcons: this.state.WorkShowIcons,
+									selectedIcons: [],
+									imagePreviewUrl: '',
+									file: ''
 								});
+
+								this.refs.titledata.value = "";
+								this.refs.embeddata.value = "";
+								this.refs.imageFile.value = null;
+
 							}else{
 								alert('Failed..');
 							}
@@ -312,8 +357,16 @@ export default class works extends Component{
 	updateIcons(){
 		axios.get('http://localhost:3001/api/icon')
 		.then((response) => {
+
+			let dataWorkIcons = [];
+			response.data.map((data, index)=>{
+				data.cselected = "";
+				dataWorkIcons.push(data);
+			});
+
 			this.setState({
-				iconsDatas: response.data
+				iconsDatas: response.data,
+				WorkShowIcons: dataWorkIcons
 			});
 		})
 		.catch(function (error) {
@@ -343,6 +396,48 @@ export default class works extends Component{
 		})
 		.catch(function (error) {
 			console.log(error);
+		});
+	}
+
+	categoryselected(index,id){
+
+		this.state.categoriesDatas.map((data, indexdata)=>{
+			if(index!=indexdata){
+				this.state.categoriesDatas[indexdata].cselected="";
+			}
+		});
+
+		if(this.state.categoriesDatas[index].cselected == ""){
+			this.state.categoriesDatas[index].cselected = "selectededit";
+			this.state.cateditid = id;
+			this.refs.categorydata.value = this.state.categoriesDatas[index].cname;
+		}else{
+			this.state.categoriesDatas[index].cselected = "";
+			this.state.cateditid = 0;
+			this.refs.categorydata.value = "";
+		}
+
+		this.setState({
+			categoriesDatas: this.state.categoriesDatas
+		});
+	}
+
+	iconsselected(index,id){
+
+		if(this.state.WorkShowIcons[index].cselected == ""){
+			this.state.WorkShowIcons[index].cselected = "selectedIconsSave";
+			this.state.selectedIcons.push(id);
+		}else{
+			this.state.WorkShowIcons[index].cselected = "";
+			let indexIcondata = this.state.selectedIcons.indexOf(id);
+
+			if (index > -1) {
+				this.state.selectedIcons.splice(indexIcondata, 1);
+			}
+		}
+
+		this.setState({
+			WorkShowIcons: this.state.WorkShowIcons
 		});
 	}
 
@@ -376,10 +471,10 @@ export default class works extends Component{
 							<label>Software</label>
 							<div className="developerIconWork">
 								{
-									this.state.iconsDatas.map((data, index) => {
+									this.state.WorkShowIcons.map((data, index) => {
 										return (
-											<div key={index} className="iconListSytleWork">
-												<img src={data.durl} />
+											<div onClick={()=> {this.iconsselected(index, data._id)} } key={index} className={"iconListSytleWork"}>
+												<img className={data.cselected} src={data.durl} />
 											</div>
 										)
 									})
@@ -468,9 +563,9 @@ export default class works extends Component{
 									{
 										this.state.categoriesDatas.map((data, index) => {
 											return (
-												<div value="default" key={index}>
+												<div className="flexrow" value="default" key={index}>
 													<i className="fa fa-times-circle-o" onClick={()=>{this.deleteCategory(data._id)}} aria-hidden="true"></i>
-													{" "+data.cname}
+													<div className={data.cselected} onClick={()=>{this.categoryselected(index,data._id)}}>{data.cname}</div>
 												</div>
 											)
 										})

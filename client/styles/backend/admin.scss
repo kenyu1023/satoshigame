@@ -412,6 +412,16 @@ img{
     flex-direction: column;
 }
 
+.flexrow{
+    display: flex;
+    align-items: center;
+    div{
+        padding: 5px 8px;
+        cursor: pointer;
+        border: 1px solid transparent;
+    }
+}
+
 .workEditLeft{
     padding: 0px 20px 50px 20px;
     float: left;
@@ -557,4 +567,13 @@ img{
     img{
         width: 30px;
     }
+}
+
+.selectededit{
+    border: 1px solid white !important;
+}
+
+.selectedIconsSave{
+    border-radius: 4px;
+    background-color: white;
 }

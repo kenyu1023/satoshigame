@@ -202,8 +202,7 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
 
   app.put('/api/category', (request, response) => {
     const { id, cname } = request.body
-    console.log(id);
-    User.findByIdAndUpdate(id, { "cname": cname }, err => {
+    Category.findByIdAndUpdate(id, { "cname": cname }, err => {
       if (err) response.status(500).send()
       else {
         response.json({status:'success'});
