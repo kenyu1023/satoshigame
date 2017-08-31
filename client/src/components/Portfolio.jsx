@@ -3,7 +3,7 @@ import axios from 'axios'
 import '../../styles/index.scss'
 
 export default class App extends React.Component {
-
+		// http://localhost:3001
 		constructor(props){
 			super(props);
 			this.state = {
@@ -15,7 +15,7 @@ export default class App extends React.Component {
 		}
 
 		updateWorks(){
-			axios.get('http://localhost:3001/api/work')
+			axios.get('/api/work')
 			.then((response) => {
 				this.setState({
 					workDatas: response.data

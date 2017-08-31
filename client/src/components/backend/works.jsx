@@ -95,7 +95,7 @@ export default class works extends Component{
 	saveCategory(){
 		if(this.refs.categorydata.value != ''){
 			if(this.state.cateditid == 0){
-				axios.post('http://localhost:3001/api/category', {
+				axios.post('/api/category', {
 					cname: this.refs.categorydata.value
 				})
 				.then(response => {
@@ -111,7 +111,7 @@ export default class works extends Component{
 					console.log(error);
 				});
 			}else{
-				axios.put('http://localhost:3001/api/category', {
+				axios.put('/api/category', {
 					id: this.state.cateditid,
 					cname: this.refs.categorydata.value
 				})
@@ -136,7 +136,7 @@ export default class works extends Component{
 	deleteCategory(id){
 		axios({
       method: 'delete',
-      url: 'http://localhost:3001/api/category',
+      url: '/api/category',
       data: {
         id,
       }
@@ -155,7 +155,7 @@ export default class works extends Component{
 	}
 
 	updateCategory(){
-		axios.get('http://localhost:3001/api/category')
+		axios.get('/api/category')
 		.then((response) => {
 			// console.log(response.data);
 			let dataCat = [];
@@ -176,7 +176,7 @@ export default class works extends Component{
 	deleteWork(id,nameImage){
 		axios({
       method: 'delete',
-      url: 'http://localhost:3001/api/work',
+      url: '/api/work',
       data: {
         id,
       }
@@ -204,7 +204,7 @@ export default class works extends Component{
 							let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 							let dateTime = date+' '+time;
 							// // wtitle, wurl, wfile, wembed, wicons, wcontent, wdate
-							axios.post('http://localhost:3001/api/work', {
+							axios.post('/api/work', {
 								wtitle: this.refs.titledata.value,
 								wembed: this.refs.embeddata.value,
 								wurl: snapshot.downloadURL,
@@ -250,7 +250,7 @@ export default class works extends Component{
 						}
 					});
 				}else{
-					axios.put('http://localhost:3001/api/work', {
+					axios.put('/api/work', {
 						id: this.state.worksEditId,
 						wtitle: this.refs.titledata.value,
 						wembed: this.refs.embeddata.value,
@@ -389,7 +389,7 @@ export default class works extends Component{
 	}
 
 	updateWorks(){
-		axios.get('http://localhost:3001/api/work')
+		axios.get('/api/work')
 		.then((response) => {
 			console.log(response.data);
 			this.setState({
@@ -426,7 +426,7 @@ export default class works extends Component{
 		firebase.storage().ref().child('satoshigame/icon/'+this.state.fileIcon.name).put(this.state.fileIcon).then((snapshot) => {
 			if(snapshot.state == 'success'){
 				// dname, dimage, durl
-				axios.post('http://localhost:3001/api/icon', {
+				axios.post('/api/icon', {
 					dname: this.refs.iconnamedata.value,
 					dimage: this.state.fileIcon.name,
 					durl: snapshot.downloadURL
@@ -450,7 +450,7 @@ export default class works extends Component{
 	}
 
 	updateIcons(){
-		axios.get('http://localhost:3001/api/icon')
+		axios.get('/api/icon')
 		.then((response) => {
 
 			let dataWorkIcons = [];
@@ -472,7 +472,7 @@ export default class works extends Component{
 	deleteIcon(id, dname){
 		axios({
       method: 'delete',
-      url: 'http://localhost:3001/api/icon',
+      url: '/api/icon',
       data: {
         id,
       }
@@ -604,7 +604,9 @@ export default class works extends Component{
 									this.state.WorkShowIcons.map((data, index) => {
 										return (
 											<div onClick={()=> {this.iconsselected(index, data._id)} } key={index} className={"iconListSytleWork"}>
-												<img className={data.cselected} src={data.durl} />
+												<div className={data.cselected}>
+													<img src={data.durl} />
+												</div>
 											</div>
 										)
 									})
