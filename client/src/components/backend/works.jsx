@@ -28,7 +28,8 @@ export default class works extends Component{
 			worksEditId: 0,
 			imagePreviewUrl: '',
 			showEditCategory: 'hide',
-			categoryModal: 'hidemodal'
+			categoryModal: 'hidemodal',
+			updateField: 0
 		}
 
 		this.updateWorks = this.updateWorks.bind(this);
@@ -95,7 +96,7 @@ export default class works extends Component{
 	saveCategory(){
 		if(this.refs.categorydata.value != ''){
 			if(this.state.cateditid == 0){
-				axios.post('/api/category', {
+				axios.post('http://localhost:3001/api/category', {
 					cname: this.refs.categorydata.value
 				})
 				.then(response => {
@@ -111,7 +112,7 @@ export default class works extends Component{
 					console.log(error);
 				});
 			}else{
-				axios.put('/api/category', {
+				axios.put('http://localhost:3001/api/category', {
 					id: this.state.cateditid,
 					cname: this.refs.categorydata.value
 				})
@@ -133,31 +134,35 @@ export default class works extends Component{
 		}
 	}
 
-	deleteCategory(id){
-		axios({
-      method: 'delete',
-      url: '/api/category',
-      data: {
-        id,
-      }
-    })
-    .then(response => {
-			if(response.data.status == 'success'){
-				console.log('success');
-				this.updateCategory();
-			}else{
-				alert('Failed..');
-			}
-		})
-		.catch(function (error) {
-			console.log(error);
-		});
+	deleteCategory(id,index){
+		if(this.state.categoriesDatas[index].result.length==0){
+			axios({
+				method: 'delete',
+				url: 'http://localhost:3001/api/category',
+				data: {
+					id,
+				}
+			})
+			.then(response => {
+				if(response.data.status == 'success'){
+					console.log('success');
+					this.updateCategory();
+				}else{
+					alert('Failed..');
+				}
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+		}else{
+			alert('Can not  delete this category. The category has relation with works.');
+		}
 	}
 
 	updateCategory(){
-		axios.get('/api/category')
+		axios.get('http://localhost:3001/api/category')
 		.then((response) => {
-			// console.log(response.data);
+			console.log(response.data);
 			let dataCat = [];
 			response.data.map((data, index)=>{
 				data.cselected = "";
@@ -176,7 +181,7 @@ export default class works extends Component{
 	deleteWork(id,nameImage){
 		axios({
       method: 'delete',
-      url: '/api/work',
+      url: 'http://localhost:3001/api/work',
       data: {
         id,
       }
@@ -204,7 +209,7 @@ export default class works extends Component{
 							let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 							let dateTime = date+' '+time;
 							// // wtitle, wurl, wfile, wembed, wicons, wcontent, wdate
-							axios.post('/api/work', {
+							axios.post('http://localhost:3001/api/work', {
 								wtitle: this.refs.titledata.value,
 								wembed: this.refs.embeddata.value,
 								wurl: snapshot.downloadURL,
@@ -218,6 +223,8 @@ export default class works extends Component{
 								if(response.data.status == 'success'){
 									// console.log('success');
 									this.updateWorks();
+									this.updateCategory();
+									this.updateIcons();
 									clearTimeout(timeout);
 									document.getElementById('editWorkBlock').style.height = this.refs.editwork.clientHeight + 'px';
 									timeout = setTimeout(function() {
@@ -250,7 +257,7 @@ export default class works extends Component{
 						}
 					});
 				}else{
-					axios.put('/api/work', {
+					axios.put('http://localhost:3001/api/work', {
 						id: this.state.worksEditId,
 						wtitle: this.refs.titledata.value,
 						wembed: this.refs.embeddata.value,
@@ -264,6 +271,8 @@ export default class works extends Component{
 						if(response.data.status == 'success'){
 							// console.log('success');
 							this.updateWorks();
+							this.updateCategory();
+							this.updateIcons();
 							clearTimeout(timeout);
 							document.getElementById('editWorkBlock').style.height = this.refs.editwork.clientHeight + 'px';
 							timeout = setTimeout(function() {
@@ -389,12 +398,14 @@ export default class works extends Component{
 	}
 
 	updateWorks(){
-		axios.get('/api/work')
+		axios.get('http://localhost:3001/api/work')
 		.then((response) => {
 			console.log(response.data);
 			this.setState({
 				workDatas: response.data,
 				sortWorkArray: response.data,
+			},()=>{
+				this.showChangeMode(this.state.updateField);
 			});
 		})
 		.catch(function (error) {
@@ -405,7 +416,8 @@ export default class works extends Component{
 	showChangeMode(idcat){
 		if(idcat==0){
 			this.setState({
-				sortWorkArray: this.state.workDatas
+				sortWorkArray: this.state.workDatas,
+				updateField: 0
 			});
 		}else{
 			let arrayMode = [];
@@ -417,7 +429,8 @@ export default class works extends Component{
 				}
 			);
 			this.setState({
-				sortWorkArray: arrayMode
+				sortWorkArray: arrayMode,
+				updateField: idcat
 			});
 		}
 	}
@@ -426,7 +439,7 @@ export default class works extends Component{
 		firebase.storage().ref().child('satoshigame/icon/'+this.state.fileIcon.name).put(this.state.fileIcon).then((snapshot) => {
 			if(snapshot.state == 'success'){
 				// dname, dimage, durl
-				axios.post('/api/icon', {
+				axios.post('http://localhost:3001/api/icon', {
 					dname: this.refs.iconnamedata.value,
 					dimage: this.state.fileIcon.name,
 					durl: snapshot.downloadURL
@@ -450,7 +463,7 @@ export default class works extends Component{
 	}
 
 	updateIcons(){
-		axios.get('/api/icon')
+		axios.get('http://localhost:3001/api/icon')
 		.then((response) => {
 
 			let dataWorkIcons = [];
@@ -469,29 +482,33 @@ export default class works extends Component{
 		});
 	}
 
-	deleteIcon(id, dname){
-		axios({
-      method: 'delete',
-      url: '/api/icon',
-      data: {
-        id,
-      }
-    })
-    .then(response => {
-			if(response.data.status == 'success'){
-				var desertRef = firebase.storage().ref('satoshigame/icon').child(dname);
-				desertRef.delete().then(() => {
-					this.updateIcons();
-				}).catch(function(error) {
-					console.log(error);
-				});
-			}else{
-				alert('Failed..');
-			}
-		})
-		.catch(function (error) {
-			console.log(error);
-		});
+	deleteIcon(id, dname, index){
+		if(this.state.iconsDatas[index].result.length==0){
+			axios({
+				method: 'delete',
+				url: 'http://localhost:3001/api/icon',
+				data: {
+					id,
+				}
+			})
+			.then(response => {
+				if(response.data.status == 'success'){
+					var desertRef = firebase.storage().ref('satoshigame/icon').child(dname);
+					desertRef.delete().then(() => {
+						this.updateIcons();
+					}).catch(function(error) {
+						console.log(error);
+					});
+				}else{
+					alert('Failed..');
+				}
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+		}else{
+			alert('Can not  delete this icon. The icon has relation with works.');
+		}
 	}
 
 	categoryselected(index,id){
@@ -701,8 +718,8 @@ export default class works extends Component{
 										this.state.categoriesDatas.map((data, index) => {
 											return (
 												<div className="flexrow" value="default" key={index}>
-													<i className="fa fa-times-circle-o" onClick={()=>{this.deleteCategory(data._id)}} aria-hidden="true"></i>
-													<div className={data.cselected} onClick={()=>{this.categoryselected(index,data._id)}}>{data.cname}</div>
+													<i className="fa fa-times-circle-o" onClick={()=>{this.deleteCategory(data._id, index)}} aria-hidden="true"></i>
+													<div className={data.cselected} onClick={()=>{this.categoryselected(index,data._id)}}>{data.cname +'  ('+data.result.length+')'}</div>
 												</div>
 											)
 										})
@@ -732,9 +749,9 @@ export default class works extends Component{
 										this.state.iconsDatas.map((data, index) => {
 											return (
 												<div key={index} className="iconListSytle">
-													<i className="fa fa-times-circle-o" onClick={()=>{this.deleteIcon(data._id,data.dimage)}} aria-hidden="true"></i>
+													<i className="fa fa-times-circle-o" onClick={()=>{this.deleteIcon(data._id,data.dimage,index)}} aria-hidden="true"></i>
 													<img src={data.durl} />
-													<p>{data.dname}</p>
+													<p>{data.dname +'  ('+data.result.length+')'}</p>
 												</div>
 											)
 										})

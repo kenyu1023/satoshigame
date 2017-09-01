@@ -229,13 +229,40 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
   })
 
   app.get('/api/category', (request, response) => {
-    Category.find({}, (err, categoryArray) => {
-      if (err) response.status(500).send()
-      else {
-        response.json(categoryArray);
+    Category.
+    aggregate([
+    {
+      "$lookup": {
+          "from": "works",
+          "localField": "_id",
+          "foreignField": "wcategory",
+          "as": "result"
       }
-    }).sort( { _id: 1 } );
+    }]).sort( { _id: 1 } ).exec(
+      (err, categoryArray) => {
+        if (err) response.status(500).send()
+        else {
+          response.json(categoryArray);
+        }
+      }
+    );
   })
+    // Category.find({}, (err, categoryArray) => {
+    //   if (err) response.status(500).send()
+    //   else {
+    //     response.json(categoryArray);
+    //   }
+    // }).aggregate([
+    // {
+    //   $lookup:
+    //     {
+    //       from: "works",
+    //       localField: "wcategory",
+    //       foreignField: "_id",
+    //       as: "count"
+    //     }
+    // }]).sort( { _id: 1 } );
+  // })
 
   app.delete('/api/category', (request, response) => {
     const { id } = request.body
@@ -274,12 +301,23 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
   })
 
   app.get('/api/icon', (request, response) => {
-    DevIcon.find({}, (err, iconArray) => {
-      if (err) response.status(500).send()
-      else {
-        response.json(iconArray);
+    DevIcon.
+    aggregate([
+    {
+      "$lookup": {
+          "from": "works",
+          "localField": "_id",
+          "foreignField": "wicons",
+          "as": "result"
       }
-    }).sort( { _id: 1 } );
+    }]).sort( { _id: 1 } ).exec(
+      (err, iconArray) => {
+        if (err) response.status(500).send()
+        else {
+          response.json(iconArray);
+        }
+      }
+    );
   })
 
   app.delete('/api/icon', (request, response) => {
