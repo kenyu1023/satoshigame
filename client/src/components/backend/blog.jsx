@@ -56,7 +56,7 @@ class blog extends Component{
 		// alert(this.state.value.toString('html'));
 		if(this.state.text.trim() != "" && this.refs.titledata.value != ""){
 			if(this.state.actionMode == -1){
-				axios.post('http://localhost:3001/api/blog', {
+				axios.post('/api/blog', {
 					btitle: this.refs.titledata.value,
 					bcontent: this.state.text,
 					bimage: this.state.insertImage,
@@ -77,7 +77,7 @@ class blog extends Component{
 					console.log(error);
 				});
 			}else{
-				axios.put('http://localhost:3001/api/blog', {
+				axios.put('/api/blog', {
 					id: this.state.actionMode,
 					btitle: this.refs.titledata.value,
 					bcontent: this.state.text,
@@ -102,7 +102,7 @@ class blog extends Component{
 	}
 
 	updateBlog(){
-		axios.get('http://localhost:3001/api/blog')
+		axios.get('/api/blog')
 		.then((response) => {
 			console.log(response.data);
 			this.setState({
@@ -139,7 +139,7 @@ class blog extends Component{
 	deleteBlog(id, index){
 		axios({
       method: 'delete',
-      url: 'http://localhost:3001/api/blog',
+      url: '/api/blog',
       data: {
         id,
       }

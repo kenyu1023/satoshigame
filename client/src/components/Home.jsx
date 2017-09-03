@@ -25,7 +25,7 @@ export default class App extends React.Component {
 		}
 
 		updateWorks(){
-			axios.get('http://localhost:3001/api/work')
+			axios.get('/api/work')
 			.then((response) => {
 				this.setState({
 					workDatas: response.data

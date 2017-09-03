@@ -21,7 +21,7 @@ export default class App extends React.Component {
 		}
 
 		updateWorks(){
-			axios.get('http://localhost:3001/api/blog')
+			axios.get('/api/blog')
 			.then((response) => {
 				console.log(response.data);
 					this.setState({
