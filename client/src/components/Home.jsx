@@ -2,27 +2,56 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { ParallaxController } from 'react-scroll-parallax';
 import { Parallax } from 'react-scroll-parallax';
+import Slider from 'react-slick';
+import axios from 'axios';
 import '../../styles/index.scss'
 
 ParallaxController.init();
 
-
 export default class App extends React.Component {
-
+		// http://localhost:3001
 		constructor(props){
 			super(props);
 			this.state = {
-
+				workDatas: []
 			};
+
+			this.updateWorks = this.updateWorks.bind(this);
+			this.updateWorks();
 		}
 
 		componentDidMount(){
-			this.props.loading();
+			// this.props.loading();
+		}
+
+		updateWorks(){
+			axios.get('http://localhost:3001/api/work')
+			.then((response) => {
+				this.setState({
+					workDatas: response.data
+				});
+				this.props.loading();
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
 		}
 
 		render(){
+
+			var settings = {
+				dots: false,
+				infinite: true,
+				autoplay: true,
+				autoplaySpeed: 1500,
+				speed: 700,
+				swipeToSlide: true,
+				slidesToShow: 3,
+				slidesToScroll: 1
+			};
+
 			return (
-				<div>
+				<div className="home-style">
 						<div className="page-top">
 							<video autoPlay loop id="video-background" muted>
   						<source src="https://player.vimeo.com/external/158148793.hd.mp4?s=8e8741dbee251d5c35a759718d4b0976fbf38b6f&profile_id=119&oauth2_token_id=57447761" type="video/mp4" />
@@ -82,31 +111,22 @@ export default class App extends React.Component {
 							</Parallax>
 
 							<div className="portfolio-slider">
-								<div className="img-div">
-									<img src="https://s-media-cache-ak0.pinimg.com/originals/2f/ef/43/2fef438ac76fdc908b9ff698d78c8c03.png" alt="portfolio" />
-								</div>
 
-								<div className="img-div">
-									<img src="https://i.pinimg.com/736x/66/bf/97/66bf97d6305dc576a77a1ed26606315e--game-character-design-simple-character.jpg" alt="portfolio" />
-								</div>
+								<Slider {...settings}>
 
-								<div className="img-div">
-									<img src="https://s-media-cache-ak0.pinimg.com/736x/cf/ee/38/cfee38497172d6e70425235c35ae102a--game-character-design-character-design-animation.jpg" alt="portfolio" />
-								</div>
+									<div className="img-div"><img src="https://s-media-cache-ak0.pinimg.com/originals/2f/ef/43/2fef438ac76fdc908b9ff698d78c8c03.png" alt="portfolio" /></div>
+									{
+										this.state.workDatas.map((data, index) => {
+											return (
+												<div className="img-div" key={data._id} >
+													<img src={data.wurl} />
+												</div>
+											)
+										})
+									}
+								</Slider>
 
-								<div className="img-div">
-									<img src="https://s-media-cache-ak0.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="portfolio" />
-								</div>
-
-								<div className="img-div">
-									<img src="https://s-media-cache-ak0.pinimg.com/originals/2f/ef/43/2fef438ac76fdc908b9ff698d78c8c03.png" alt="portfolio" />
-								</div>
-
-								<div className="img-div">
-									<img src="https://s-media-cache-ak0.pinimg.com/736x/d7/61/38/d76138de84a31689daaa36be8df56fbd--game-character-design-main-character.jpg" alt="portfolio" />
-								</div>
-
-						</div>
+							</div>
 							<Link to='/portfolio'>See More</Link>
 						</div>
 
