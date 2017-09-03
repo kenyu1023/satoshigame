@@ -257,12 +257,14 @@ export default class works extends Component{
 						}
 					});
 				}else{
+
+
 					axios.put('/api/work', {
 						id: this.state.worksEditId,
 						wtitle: this.refs.titledata.value,
 						wembed: this.refs.embeddata.value,
 						wurl: this.state.imagePreviewUrl,
-						wfile: this.state.file.name,
+						// wfile: this.state.file.name,
 						wcategory: this.refs.categoryId.value,
 						wicons: this.state.selectedIcons,
 						wcontent: ''

@@ -22,6 +22,7 @@ class blog extends Component{
 			isUploading: false,
 			progress: 0,
 			avatarURL: '',
+			mainImage: '',
 			blogModal: 'hidemodal'
 		}
 
@@ -55,16 +56,17 @@ class blog extends Component{
 		// alert(this.state.value.toString('html'));
 		if(this.state.text.trim() != "" && this.refs.titledata.value != ""){
 			if(this.state.actionMode == -1){
-				axios.post('/api/blog', {
+				axios.post('http://localhost:3001/api/blog', {
 					btitle: this.refs.titledata.value,
 					bcontent: this.state.text,
 					bimage: this.state.insertImage,
+					bmainimage :this.state.mainImage,
 					bdate: dateTime
 				})
 				.then(response => {
 					if(response.data.status == 'success'){
 						this.refs.titledata.value = '';
-						this.setState({text: '', insertImage: []});
+						this.setState({text: '', insertImage: [],mainImage: ''});
 						this.updateBlog();
 						this.closeBlogModal();
 					}else{
@@ -75,11 +77,12 @@ class blog extends Component{
 					console.log(error);
 				});
 			}else{
-				axios.put('/api/blog', {
+				axios.put('http://localhost:3001/api/blog', {
 					id: this.state.actionMode,
 					btitle: this.refs.titledata.value,
 					bcontent: this.state.text,
-					bimage: this.state.insertImage
+					bimage: this.state.insertImage,
+
 				})
 				.then(response => {
 					if(response.data.status == 'success'){
@@ -99,7 +102,7 @@ class blog extends Component{
 	}
 
 	updateBlog(){
-		axios.get('/api/blog')
+		axios.get('http://localhost:3001/api/blog')
 		.then((response) => {
 			console.log(response.data);
 			this.setState({
@@ -136,7 +139,7 @@ class blog extends Component{
 	deleteBlog(id, index){
 		axios({
       method: 'delete',
-      url: '/api/blog',
+      url: 'http://localhost:3001/api/blog',
       data: {
         id,
       }
@@ -178,7 +181,7 @@ class blog extends Component{
 			insertImage: this.state.insertImage
 		});
     this.setState({avatar: filename, progress: 100, isUploading: false});
-		firebase.storage().ref('satoshigame/blog').child(filename).getDownloadURL().then(url => this.setState({avatarURL: url},
+		firebase.storage().ref('satoshigame/blog').child(filename).getDownloadURL().then(url => this.setState({avatarURL: url,mainImage: this.state.mainImage == '' ? url :  this.state.mainImage },
 			() => {
 				if(this.refs.reactQuill.getEditor().getSelection()!=null){
 					let cursorPosition = this.refs.reactQuill.getEditor().getSelection().index;

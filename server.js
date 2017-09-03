@@ -102,11 +102,12 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
   // BLOG ///////////////////////////////
 
   app.post('/api/blog', (request, response) => {
-    const { btitle, bcontent, bimage, bdate } = request.body
+    const { btitle, bcontent, bimage,bmainimage, bdate } = request.body
     new Blog({
       btitle,
       bcontent,
       bimage,
+      bmainimage,
       bdate
     }).save(err => {
       if (err) response.status(500)
@@ -117,8 +118,8 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
   })
 
   app.put('/api/blog', (request, response) => {
-    const {id, btitle, bcontent, bimage } = request.body
-    Blog.findByIdAndUpdate(id, { btitle, bcontent,bimage }, err => {
+    const {id, btitle, bcontent,bmainimage, bimage } = request.body
+    Blog.findByIdAndUpdate(id, { btitle, bcontent,bimage,bmainimage }, err => {
       if (err) response.status(500).send()
       else {
         response.json({status:'success'});

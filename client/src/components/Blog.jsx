@@ -21,7 +21,7 @@ export default class App extends React.Component {
 		}
 
 		updateWorks(){
-			axios.get('/api/blog')
+			axios.get('http://localhost:3001/api/blog')
 			.then((response) => {
 				console.log(response.data);
 					this.setState({
@@ -39,17 +39,32 @@ export default class App extends React.Component {
 
 		render(){
 			return (
-				<div>
+				<div className="row-blog">
 					<h1 className="blog-title">Blog</h1>
 					<div className="blog-main">
 						{
 							this.state.blogDatas.map((data, index) => {
 								return (
-									<div className="large-6 columns blog-panel" key={index}>
-										<h3>{data.btitle}</h3>
-										<p>{data.bdate}</p>
-										<div>{renderHTML(data.bcontent)}</div>
+
+									data.bmainimage != "" ?
+									<div className="large-12 columns blog-panel" key={index}>
+										<div className="blog-img-div"><img src={data.bmainimage} /></div>
+										<div className="blog-para">
+											<h1>{data.btitle}</h1>
+											<p>{data.bdate}</p>
+											<a>READ</a>
+										</div>
+									</div> :
+
+									<div className="large-12 columns blog-panel" key={index}>
+										<div className="blog-para-full">
+											<h1>{data.btitle}</h1>
+											<p>{data.bdate}</p>
+											<a>READ</a>
+										</div>
 									</div>
+
+
 								)
 							})
 						}
