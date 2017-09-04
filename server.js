@@ -52,6 +52,14 @@ mongoose.connect(url,{ useMongoClient: true }, dbErr => {
       response.sendFile(path.resolve(__dirname, 'client/public', 'index.html'))
   })
 
+  app.get('/blog', function (request, response){
+      response.sendFile(path.resolve(__dirname, 'client/public', 'index.html'))
+  })
+
+  app.get('/portfolio', function (request, response){
+      response.sendFile(path.resolve(__dirname, 'client/public', 'index.html'))
+  })
+
   app.get('/login', function (request, response){
       response.sendFile(path.resolve(__dirname, 'client/public', 'index.html'))
   })
